@@ -1,0 +1,202 @@
+# =====================================================================
+# Adaptive Document Preparation System — Configuration
+# =====================================================================
+# Single source of truth for all tunable parameters.
+# Edit values here; never hardcode in source.
+# Secrets (API keys, passwords) go in .env, NOT here.
+# =====================================================================
+
+
+# ── Application metadata ─────────────────────────────────────────────
+app:
+  name: "Adaptive Document Preparation System"
+  version: "1.0.0"
+  environment: "development"     # development | production
+
+
+# ── File and directory paths (Docker-mountable) ──────────────────────
+paths:
+  pdf_corpus: "data/SLATEFALL_DOSSIER.pdf"
+  chromadb_dir: "kb/chromadb"
+  outputs_dir: "outputs"
+  logs_dir: "logs"
+
+
+# ── PDF parsing (hybrid: PyMuPDF prose + pdfplumber tables) ──────────
+# Corner case #1: tables parsed structurally, not flattened
+# Corner case #3: section boundary regex anchored at line start
+pdf:
+  use_pymupdf_for_prose: true
+  use_pdfplumber_for_tables: true
+  section_regex: "^Section \\d+\\."
+  sub_section_regex: "^\\d+\\.\\d+\\s+"
+  table_format: "markdown"        # how tables are serialised into chunks
+
+
+# ── Chunking strategy ────────────────────────────────────────────────
+# Sub-section boundaries respected. Min/max enforced to avoid corner
+# cases #14 (tiny chunks) and #18 (oversized chunks).
+chunking:
+  strategy: "sub_section"
+  min_chunk_tokens: 100           # below this → merge with neighbour
+  max_chunk_tokens: 500           # above this → recursive split
+  overlap_tokens: 50              # between adjacent chunks
+  recursive_splitter_separators:  # used when sub-section exceeds max
+    - "\n\n"
+    - "\n"
+    - ". "
+    - " "
+
+
+# ── Embedding model ──────────────────────────────────────────────────
+embedding:
+  model_name: "sentence-transformers/all-MiniLM-L6-v2"
+  dimensions: 384
+  device: "cpu"                   # change to "cuda" if GPU available
+  batch_size: 32                  # for indexing throughput
+  normalize: true                 # unit vectors → cosine similarity
+
+
+# ── Vector store (ChromaDB, local persistent) ────────────────────────
+vectordb:
+  backend: "chromadb"
+  collection_name: "slatefall_chunks"
+  similarity_metric: "cosine"
+  default_top_k: 10               # retrieval results per query
+
+
+# ── Database (PostgreSQL — non-secret parts; password in .env) ───────
+database:
+  host: "postgres"                # Docker Compose service name
+  port: 5432
+  name: "prep_kb"
+  user: "prep"
+  pool_size: 5
+  max_overflow: 10
+  pool_recycle_seconds: 1800
+  echo_sql: false                 # true = log all SQL (debugging)
+
+
+# ── LLM configuration ────────────────────────────────────────────────
+# Primary provider with automatic fallback chain on failure (#15).
+llm:
+  provider: "groq"                # groq | gemini | ollama
+  fallback_providers:
+    - "gemini"
+    # - "ollama"                  # uncomment when Ollama is set up
+  model:
+    groq: "llama-3.1-8b-instant"
+    gemini: "gemini-1.5-flash"
+    ollama: "llama3:8b"
+  temperature: 0.7                # 0.0 = deterministic, 1.0 = creative
+  max_output_tokens: 2500
+  timeout_seconds: 30
+  max_retries: 3
+  retry_backoff: "exponential"    # exponential | linear | constant
+  retry_base_delay: 1.0           # seconds
+
+
+# ── Token budget management ──────────────────────────────────────────
+# Strict allocation per component. Total must fit context window.
+# Corner case #17: history compression triggers when over budget.
+token_management:
+  context_limit: 8000             # Groq LLaMA 3.1 (8K window)
+  output_reserve: 2500            # reserved for LLM response
+  system_prompt_budget: 400       # fixed
+  instructions_budget: 300        # fixed
+  history_budget: 1200            # max before compression
+  content_budget: 3600            # PDF chunks
+  # Sum of input budgets (400+300+1200+3600=5500) + output (2500) = 8000
+
+
+# ── MCQ generation ───────────────────────────────────────────────────
+# Default 5 questions per section per assessment brief.
+mcq:
+  questions_per_section: 5
+  default_difficulty: "medium"
+  difficulty_levels: ["easy", "medium", "hard"]
+  require_source_quote: true      # hallucination guard (#8)
+  hallucination_fuzzy_threshold: 0.5   # source quote vs chunk similarity
+  validate_unique_choices: true   # corner case #7
+  glossary_section_strategy: "definition_matching"  # corner case #2
+
+
+# ── Adaptive logic ───────────────────────────────────────────────────
+# Weight formula, mastery transitions, regression detection.
+adaptive:
+  mastery_threshold: 3            # consecutive correct = mastered
+  weight_min: 0.1                 # mastered topics
+  weight_max: 5.0                 # ceiling
+  weight_decay_on_correct: 0.3    # multiplier when streak >= 2
+  weight_boost_on_wrong: 0.5      # per-wrong-answer additive impact
+  regression_detection: true      # corner case #11
+  regression_weight_floor: 2.5    # bump to this on regression
+  difficulty_escalation: true     # corner case #9 (all mastered)
+  all_weak_focus_topics: 3        # corner case #10 (all weak)
+  cross_section_topic_tracking: true  # global + section-specific mastery
+
+
+# ── History compression strategy ─────────────────────────────────────
+# Adaptive compression — keeps adaptive working across many iterations.
+history:
+  enable_compression: true
+  compression_threshold_tokens: 1200
+  compression_level_iter_1_2: "full"        # raw per-question detail
+  compression_level_iter_3_5: "aggregated"  # topic-level stats
+  compression_level_iter_6_plus: "summary"  # top-K weak only
+  include_question_themes_to_avoid: true
+
+
+# ── Retrieval ────────────────────────────────────────────────────────
+retrieval:
+  strategy: "hybrid"              # hybrid (SQL+vector) | sql_only | vector_only
+  sql_chunks_per_section: 20      # max chunks fetched per section
+  vector_top_k: 10                # ChromaDB top-K
+  resolve_cross_references: true  # corner case #4
+  cross_reference_max_depth: 1    # only fetch directly referenced chunks
+
+
+# ── Answer simulation (for Scenario B) ───────────────────────────────
+# Realistic learning pattern simulation (Touch #6).
+simulation:
+  default_strategy: "weighted"    # weighted | random | all_correct
+  weighted_correct_ratio_strong: 0.85   # mastered topic correct chance
+  weighted_correct_ratio_moderate: 0.60 # mid-weight topic
+  weighted_correct_ratio_weak: 0.30     # high-weight topic
+  random_correct_ratio: 0.50      # for "random" strategy
+  scenario_b_correct_ratio: 0.65  # default Scenario B run
+
+
+# ── Logging (structlog) ──────────────────────────────────────────────
+logging:
+  level: "INFO"                   # DEBUG | INFO | WARNING | ERROR
+  format: "json"                  # json | console
+  file_path: "logs/app.log"
+  console_output: true
+  include_caller_info: true
+  rotate_max_bytes: 10485760      # 10 MB
+  rotate_backup_count: 5
+
+
+# ── FastAPI server ───────────────────────────────────────────────────
+api:
+  host: "0.0.0.0"
+  port: 8000
+  reload: false                   # true for development
+  workers: 1
+  cors_origins:
+    - "*"                         # restrict in production
+  docs_url: "/docs"
+  redoc_url: "/redoc"
+  openapi_url: "/openapi.json"
+
+
+# ── KB snapshot ──────────────────────────────────────────────────────
+# Assessment requirement: top-5 most recent sessions in snapshot.
+snapshot:
+  recent_sessions_count: 5
+  include_questions: true
+  include_adaptive_state: true
+  include_token_usage: true
+  format: "json"
+  pretty_print: true

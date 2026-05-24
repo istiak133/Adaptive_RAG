@@ -1,0 +1,62 @@
+================================================================================
+PART 5: CORNER CASES & PROFESSIONAL FEATURES REFERENCE
+================================================================================
+This document compiles all the corner cases, failure modes, and professional
+touches we identified to make the system resilient and industry-grade.
+================================================================================
+
+1. CRITICAL CORNER CASES & SOLUTIONS
+-------------------------------------
+
+A. PDF Parsing Anomalies
+   - Table Formatting Breaks: pdfplumber might turn structural tables into flat lines.
+     * Solution: Detect tables with page.extract_tables() and parse them as Markdown tables.
+   - Glossary MCQ Generation: Section 10 is a list of definitions, not a story.
+     * Solution: Detect if studying Section 10 and adjust the prompt to generate vocabulary matching or definition quizzes.
+   - Cross-References: Chunk for Section 5 says "see §2.13 (Echo Lock)". Section 5 has no details on Echo Lock, but user gets tested on it.
+     * Solution: Detect section reference notation "§X.Y" in active chunks and fetch the corresponding chunk from Section X to append as context.
+
+B. LLM Output Failures
+   - Invalid JSON: LLM wraps JSON in markdown blocks (```json) or appends conversational prefix text.
+     * Solution: Clean response text by stripping markdown, slicing from first '[' to last ']', and fallback to regex extraction if JSON parsing fails.
+   - Count Mismatches: LLM returns 3 or 7 questions instead of 5.
+     * Solution: Truncate if too many; recursively request the remaining difference if too few.
+   - Malformed Choices: Choice values are duplicate or the correct answer field references a non-existent option (e.g. 'E').
+     * Solution: Validate with Pydantic; reject question and request regeneration if invalid.
+   - Hallucination: LLM creates facts not present in the dossier.
+     * Solution: Command the LLM to output a "source_quote" from the provided text for every question. Validate that the quote exists (fuzzy match >80% similarity) in the source chunks.
+
+C. Adaptive Engine Edge Cases
+   - Mastery Satiation: All topics are mastered (weight = 0.1). What to test?
+     * Solution: Escalation. Upgrade difficulty to "hard", combine concepts across sections, and generate application-based questions rather than recall.
+   - All Weak topics: All topics have high weights (>3.0) because the user is failing everything.
+     * Solution: Focus on the weakest 3, lower difficulty to "easy", and prompt LLM to write fundamental, simplified questions.
+   - Regression: User previously mastered a topic, but got it wrong this time.
+     * Solution: Reset is_mastered = False, and force the weight to 2.5 to re-prioritize.
+   - API Failures: Mid-session LLM call timeouts.
+     * Solution: Wrap LLM calls in a retry handler with exponential backoff (1s, 2s, 4s) and catch rate limit exceptions to pause execution.
+
+2. PROFESSIONAL TOUCHES (BONUS MARKS)
+--------------------------------------
+
+A. Configuration Management (config.yaml)
+   - Store all thresholds in a config file (LLM model name, temperature, chunk sizes, token budgets, mastery streaks, weight decay rates). This allows reviewers to change behavior without modifying Python code.
+
+B. Structured JSON Logging
+   - Avoid plain print statements for logging. Write logs to a file in structured JSON format (e.g., event, session_id, token_usage, error_class, elapsed_ms). This fulfills the assessment's audit requirements.
+
+C. Pydantic Data Validation
+   - Build strict schemas for LLM outputs, configuration parameters, and API inputs. This guarantees data integrity and makes debugging malformed data trivial.
+
+D. Spaced Repetition / Difficulty Progression
+   - Track session performance. If the average score is high, escalate the section difficulty level (easy -> medium -> hard). If the score drops, scale it down and focus on core definitions.
+
+E. CLI Experience (Click/Argparse)
+   - Build a polished command-line interface with distinct commands:
+     * `python cli.py prep [section_ids...]`
+     * `python cli.py history`
+     * `python cli.py snapshot [session_id]`
+     * `python cli.py scenario-b` (automatic runner)
+
+F. Smart Answer Simulation
+   - For testing Scenario B, do not use purely random answers. Simulate answers based on topic weights: if a topic has a weight of 4.5, give it a 30% chance of being correct; if a topic has a weight of 0.1, give it an 85% chance of being correct. This showcases authentic learning curves in the logs.

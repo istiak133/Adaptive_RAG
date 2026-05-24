@@ -1,0 +1,358 @@
+================================================================================
+ADAPTIVE DOCUMENT PREPARATION SYSTEM
+CORNER CASES & PROFESSIONAL TOUCHES — REFERENCE DOCUMENT
+================================================================================
+Created: 2026-05-22
+Purpose: Development er somoy ei file ta dekhba — kothay ki problem hote pare
+         ar kivabe solve korba segula documented ache ekhane.
+================================================================================
+
+
+========================
+CATEGORY 1: PDF PARSING
+========================
+
+CORNER CASE #1 — Table Data Parsing Bhenge Jaowa
+-------------------------------------------------
+Problem: SLATEFALL_DOSSIER e onek table ache (targeting failure rates, cooldown
+         matrix, equipment specs, threat tier table). pdfplumber table thikmotor
+         parse na korle data ekta single line e eshe jabe — LLM bujhbe na kon
+         data kon column er.
+Severity: HIGH
+When to implement: PDF ingestion step e, shuru tei.
+Solution approach: pdfplumber er page.extract_tables() use koro. Table data ke
+                   markdown table ba structured text hisebe store koro.
+Example: "Condition Failure Rate Dry clear 0.4% Heavy rain 7.0%" — eita vul.
+         Properly formatted table hisebe rakhte hbe.
+
+
+CORNER CASE #2 — Section 10 (Glossary) theke MCQ Generation
+-------------------------------------------------------------
+Problem: Section 10 holo Glossary, Codename Index, Reference Tables. Eita
+         narrative text na — eita dictionary/reference. Ekhane theke meaningful
+         MCQ banana kothin.
+Severity: MEDIUM
+When to implement: MCQ generation prompt e — section type onujaayi prompt change.
+Solution approach: Section type detect koro. Glossary/Reference section er jonno
+                   alada prompt strategy — "definition matching" ba "term
+                   identification" type MCQ banao.
+
+
+CORNER CASE #3 — Section Boundary Detection Vul Howa
+------------------------------------------------------
+Problem: PDF te "Section 3" lekha ache, kintu section 3 er moddhe "§3.4",
+         "§3.8" etc sub-section o "Section" word contain kore. Naive parsing
+         korle vul jaygay section bhag hte pare.
+Severity: HIGH
+When to implement: PDF parsing step e, ekbare shuru tei.
+Solution approach: Regex diye shudhu main section header match koro —
+                   "^Section \d+\." pattern. Sub-section (§3.4) alada pattern.
+
+
+CORNER CASE #4 — Cross-Reference Content
+------------------------------------------
+Problem: PDF te onek jaygay "(see §5.4)", "(§2.13)", "(§7.10)" erokom cross-
+         reference ache. Dhoro Section 5 theke MCQ banachchho, kintu okhane
+         bola ache "Tail Momentum (§2.6)" — mane answer ta aslei Section 2 te
+         ache. Section 5 er chunk e shudhu reference ache, detail nei.
+Severity: MEDIUM
+When to implement: Chunk retrieval step e, MCQ generation er age.
+Solution approach: Cross-reference detect koro. Jokhon ekta chunk e "§X.Y"
+                   reference thake, tokhon oi referenced chunk o context e
+                   include koro (token budget er moddhe).
+
+
+============================
+CATEGORY 2: LLM OUTPUT
+============================
+
+CORNER CASE #5 — LLM Invalid JSON Output
+------------------------------------------
+Problem: LLM ke bolba "JSON format e MCQ dao". Kintu LLM majhe majhe:
+         - JSON er age-pore extra text dey ("Here are the questions: {...}")
+         - Invalid JSON dey (missing comma, unclosed bracket)
+         - Markdown code block e wrap kore (```json ... ```)
+Severity: HIGH
+When to implement: LLM response parsing step e.
+Solution approach: Multi-step parsing — markdown strip, JSON extract (first
+                   '[' to last ']'), try-catch parse, fail hole retry.
+
+
+CORNER CASE #6 — MCQ Count Mismatch
+--------------------------------------
+Problem: Bolba "5 MCQs dao", kintu LLM 3ta ba 7ta dey.
+Severity: MEDIUM
+When to implement: MCQ validation step e.
+Solution approach: Count check — kom dile baki gular jonno arekta LLM call,
+                   beshi dile first N ta rakho.
+
+
+CORNER CASE #7 — Invalid Choices / Correct Answer
+---------------------------------------------------
+Problem: LLM emni MCQ dilo jekhane sob choice same, ba correct answer "E"
+         (E namer kono choice nei), ba choice khali/empty.
+Severity: HIGH
+When to implement: MCQ validation step e.
+Solution approach: Validate — 4 unique choices ache ki na, correct answer
+                   A/B/C/D er moddhe ki na, kono choice empty ki na. Fail
+                   hole regenerate.
+
+
+CORNER CASE #8 — LLM Hallucination
+------------------------------------
+Problem: PDF te lekha ache mass ceiling 240 kg, kintu LLM MCQ banalo
+         "mass ceiling is 300 kg" correct answer diye. WORST case.
+Severity: HIGH (MOST DANGEROUS)
+When to implement: MCQ validation step e.
+Solution approach: source_context field — LLM ke bolo protita MCQ er sathe
+                   PDF er exact quote dite hbe jekhane theke proshno esheche.
+                   Tarpor verify koro oi quote asle chunk e ache ki na.
+                   Fuzzy match use koro (80%+ similarity = OK).
+
+
+==============================
+CATEGORY 3: ADAPTIVE LOGIC
+==============================
+
+CORNER CASE #9 — Sob Topic Mastered Hole Ki Hbe?
+--------------------------------------------------
+Problem: User Section 8 porpor 5 bar porlo, protibar sob thik korlo. Sob
+         topic er weight = 0.1, sob mastered. Ekhon ki proshno korbe?
+Severity: MEDIUM
+When to implement: Question allocation step e.
+Solution approach: Strategy change —
+                   1. Difficulty barao (easy/medium → hard)
+                   2. Application-based questions dao (just recall na)
+                   3. Cross-section questions dao (section 8 + section 2 combined)
+
+
+CORNER CASE #10 — Sob Topic e Vul Korle Ki Hbe?
+-------------------------------------------------
+Problem: User protibar sob vul kore. Sob topic er weight 3+. Tahole sob
+         topic thekei "beshi proshno koro" — mane kono prioritization nei.
+Severity: MEDIUM
+When to implement: Question allocation step e.
+Solution approach: Sobcheye weak 3 ta te focus koro, baki gulo porer iter e.
+                   Difficulty kamao — easy diye shuru koro jate user basic
+                   understanding build korte pare.
+
+
+CORNER CASE #11 — Regression Detection
+----------------------------------------
+Problem: User age thik korto, ekhon vul korche.
+         Example: Tail Strike → iter 1 thik, iter 2 thik, iter 3 thik
+         (mastered!) → iter 4 VUL (bhule geche!)
+Severity: NICE-TO-HAVE (but impressive)
+When to implement: Mastery update step e.
+Solution approach: Mastered flag ache kintu ekhon vul → is_mastered = FALSE
+                   koro, weight barao (re-prioritize). Log e "regression
+                   detected" likho.
+
+
+CORNER CASE #12 — Section Overlap / Cross-Section Topics
+---------------------------------------------------------
+Problem: "Echo Lock" Section 2 te (§2.13), Section 5 te (mention), Section 9
+         te (case file e) — tin jaygay ache. User Section 2 te Echo Lock vul
+         korlo. Ekhon Section 9 porte ashle, okhane o Echo Lock related content
+         ache — adaptive ki kaj korbe?
+Severity: MEDIUM
+When to implement: KB design e (topic as first-class entity + section_topics
+                   many-to-many table).
+Solution approach: Global topic_mastery (sob section miliye) + section-specific
+                   section_topic_mastery (specific section e specific topic).
+                   New section e gele global weight use hbe.
+
+
+==============================
+CATEGORY 4: API & SYSTEM
+==============================
+
+CORNER CASE #13 — Invalid Section ID
+--------------------------------------
+Problem: User bollo "Section 15 porte chai" — PDF te 10 tai ache.
+Severity: LOW (easy fix)
+When to implement: API input validation step e.
+Solution approach: Requested IDs vs available IDs check, clear error message.
+
+
+CORNER CASE #14 — Empty/Tiny Chunks
+-------------------------------------
+Problem: Section 1 er kichu sub-section khub chhoto (shudhu ekta table ba
+         koyekta line). Chunk e bhag korle khub chhoto chunk hbe, valo MCQ
+         banana kothin.
+Severity: MEDIUM
+When to implement: PDF chunking step e.
+Solution approach: Minimum chunk size enforce koro. Khub chhoto chunk hole
+                   adjacent chunk er sathe merge koro.
+
+
+CORNER CASE #15 — LLM API Failure Mid-Session
+-----------------------------------------------
+Problem: 5 ta MCQ er moddhe 3 ta generate hoyeche, 4rth tar somoy API
+         timeout holo. Session ki obosthay thakbe?
+Severity: HIGH
+When to implement: LLM call step e.
+Solution approach: Retry with exponential backoff (1s, 2s, 4s). Max 3 retries.
+                   Rate limit hole 60 second wait. Sob retry fail hole graceful
+                   error — "Generated 3 of 5 questions, proceeding with partial
+                   set" ba user ke option dao.
+
+
+CORNER CASE #16 — Concurrent Sessions
+---------------------------------------
+Problem: Duijon user eksathe challale. SQLite te concurrent write hole
+         "database is locked" error ashe.
+Severity: NICE-TO-HAVE
+When to implement: DB setup step e.
+Solution approach: WAL mode enable koro, ba per-user KB file alada rakho.
+
+
+====================================
+CATEGORY 5: TOKEN MANAGEMENT
+====================================
+
+CORNER CASE #17 — History Barle Content er Jayga Nei
+------------------------------------------------------
+Problem: Iter 1: history = 0 tokens. Iter 5: history = 2000+ tokens.
+         Iter 10: history = 5000+ tokens. PDF content er jayga thakbe na!
+Severity: HIGH
+When to implement: Prompt building step e.
+Solution approach: Token budget system — history er jonno max budget fix koro
+                   (e.g., 1200 tokens). Budget exceed korle summarize koro —
+                   individual questions na, aggregate topic stats dao.
+
+
+CORNER CASE #18 — Chunk Too Big for Context Window
+----------------------------------------------------
+Problem: Kono sub-section onek boro (e.g., §3.4 Cerro Castillo incident =
+         almost 2 pages). Pura chunk pathale context window exceed hbe.
+Severity: HIGH
+When to implement: Chunk creation step e.
+Solution approach: Max chunk size enforce koro (e.g., 500 tokens). Boro chunk
+                   ke further split koro logical paragraph boundary te.
+
+
+=====================================
+PROFESSIONAL TOUCHES (BONUS MARKS)
+=====================================
+
+TOUCH #1 — Configuration File (YAML/JSON)
+-------------------------------------------
+Ki: Sob tunable parameter ekta config file e rakho — questions per section,
+    LLM model name, temperature, token budgets, mastery threshold, etc.
+Keno: Reviewer kono parameter code na chhue change korte parbe. Professional
+      software er chinho.
+When: Project setup er shuru tei banao.
+
+
+TOUCH #2 — Structured Logging
+-------------------------------
+Ki: Protita event JSON format e log koro — session start, MCQ generated,
+    token usage, scoring, KB update, regression detected, etc.
+Keno: Assessment e EXPLICITLY bola ache: "Structured logs (timestamps, session
+      IDs, LLM token usage, KB ops) that a reviewer can inspect post-run."
+When: Shuru thekei implement koro, sob function e.
+
+
+TOUCH #3 — Data Validation (Pydantic Models)
+----------------------------------------------
+Ki: LLM er output, user input, API request/response — shob kichur jonno
+    data model banao with validation rules.
+Keno: Invalid data automatic reject hbe. Data integrity guarantee.
+When: Model/schema design er somoy.
+
+
+TOUCH #4 — Difficulty Progression System
+------------------------------------------
+Ki: Score high → difficulty barao (easy → medium → hard).
+    Score low → difficulty kamao.
+Keno: True adaptive system — shudhu topic na, difficulty o adapt hoy.
+When: Question generation step e, adaptive logic er part hisebe.
+
+
+TOUCH #5 — Question Quality Scoring
+--------------------------------------
+Ki: Generated MCQ er quality score ber koro — source verified? choices unique?
+    explanation sufficient? distractors plausible?
+Keno: Hallucination detect kora jay. Low quality question auto-reject hoy.
+When: MCQ validation step e.
+
+
+TOUCH #6 — Smart Answer Simulation
+-------------------------------------
+Ki: Simulated answers purely random na — weak topics e beshi vul, strong
+    topics e beshi thik. Realistic learning pattern dekhay.
+Keno: Reviewer output dekhe bujhbe adaptive system kaj korche ki na.
+      Random answers dile pattern inconsistent hbe.
+When: Scenario B runner e.
+
+
+TOUCH #7 — Rich CLI Experience
+--------------------------------
+Ki: Click/argparse diye proper CLI — help text, clear commands, colored output.
+Keno: Assessment e bola ache "CLI-runnable system". Good CLI = good first
+      impression.
+When: CLI setup er somoy.
+
+
+TOUCH #8 — One-Command Scenario B Runner
+------------------------------------------
+Ki: Single command diye pura Scenario B (3 iterations) run hbe ar outputs
+    automatically save hbe correct folder structure e.
+Keno: Reviewer er life easy kore dey. 10 minute e setup er requirement meet
+      kore.
+When: Final integration step e.
+
+
+TOUCH #9 — KB Snapshot Export
+-------------------------------
+Ki: Assessment EXPLICITLY chai — "human-readable export of the top-5 most
+    recent session records". Properly formatted JSON with session details,
+    scores, weak topics, adaptive state.
+Keno: Reviewer eta dekhe verify korbe history store hochhe ar adaptive
+      prompting real data er upor vitthi korche.
+When: Scoring complete howar por, protita iteration e.
+
+
+================================================================================
+PRIORITY ORDER — Kon sequence e implement korba:
+================================================================================
+
+PHASE 1 (MUST — Core Flow):
+  #3  Section boundary detection
+  #1  Table data parsing
+  #14 Empty/tiny chunks
+  #18 Chunk too big
+  #5  LLM invalid JSON
+  #7  Invalid choices / correct answer
+  #6  MCQ count mismatch
+  #13 Invalid section ID
+  #17 History vs content token balance
+
+PHASE 2 (SHOULD — Adaptive Intelligence):
+  #12 Cross-section topics (KB design)
+  #9  All topics mastered
+  #10 All topics weak
+  #8  LLM hallucination detection
+  #4  Cross-reference content
+  #15 LLM API failure retry
+
+PHASE 3 (NICE-TO-HAVE — Polish):
+  #11 Regression detection
+  #2  Section 10 glossary handling
+  #16 Concurrent sessions
+
+PROFESSIONAL TOUCHES:
+  Touch #1 (Config) — PHASE 1 e koro
+  Touch #2 (Logging) — PHASE 1 e koro
+  Touch #9 (KB Snapshot) — PHASE 1 e koro
+  Touch #3 (Validation) — PHASE 1 e koro
+  Touch #8 (Scenario B runner) — PHASE 2 e koro
+  Touch #6 (Smart simulation) — PHASE 2 e koro
+  Touch #4 (Difficulty) — PHASE 2 e koro
+  Touch #5 (Quality scoring) — PHASE 3 e koro
+  Touch #7 (Rich CLI) — PHASE 3 e koro
+
+================================================================================
+END OF DOCUMENT
+================================================================================

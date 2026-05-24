@@ -1,0 +1,64 @@
+# =====================================================================
+# Adaptive Document Preparation System — Python dependencies
+# =====================================================================
+# All versions pinned for reproducibility.
+# Install: pip install -r requirements.txt
+# =====================================================================
+
+
+# ── Web framework (REST API) ─────────────────────────────────────────
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+
+
+# ── CLI ──────────────────────────────────────────────────────────────
+click==8.1.7
+
+
+# ── Database (PostgreSQL) ────────────────────────────────────────────
+sqlalchemy==2.0.36
+alembic==1.13.3
+psycopg2-binary==2.9.10
+
+
+# ── PDF parsing (hybrid: prose + tables) ─────────────────────────────
+pymupdf==1.24.12
+pdfplumber==0.11.4
+
+
+# ── Embeddings & vector store ────────────────────────────────────────
+sentence-transformers==3.2.1
+chromadb==0.5.20
+
+
+# ── LangChain orchestration ──────────────────────────────────────────
+langchain==0.3.7
+langchain-core==0.3.18
+langchain-community==0.3.5
+langgraph==0.2.50
+langchain-groq==0.2.1
+langchain-google-genai==2.0.4
+langchain-ollama==0.2.1
+
+
+# ── LLM provider SDKs (used by LangChain wrappers) ───────────────────
+groq==0.11.0
+google-generativeai==0.8.3
+
+
+# ── Validation & configuration ───────────────────────────────────────
+pydantic==2.9.2
+pydantic-settings==2.6.1
+pyyaml==6.0.2
+python-dotenv==1.0.1
+
+
+# ── Observability ────────────────────────────────────────────────────
+structlog==24.4.0
+tiktoken==0.8.0
+httpx==0.27.2
+
+
+# ── Testing ──────────────────────────────────────────────────────────
+pytest==8.3.3
+pytest-asyncio==0.24.0

@@ -1,0 +1,51 @@
+================================================================================
+PART 4: TOKEN MANAGEMENT & PROMPT BUDGETING STRATEGY
+================================================================================
+This document outlines how tokens are counted, the context limits of free LLMs,
+and our strategy for keeping prompts within safe operational limits.
+================================================================================
+
+1. WHAT ARE TOKENS AND WHY DO THEY MATTER?
+------------------------------------------
+- LLMs do not read words; they process "tokens" (subword segments).
+- A rough rule of thumb: 1 word ≈ 1.3 tokens. 1 page of text ≈ 400-500 tokens.
+- The entire SLATEFALL_DOSSIER PDF is ~50 pages, which equates to ~25,000 tokens.
+- We cannot send the entire PDF to the LLM in every prompt because:
+  * It exceeds the context limits of fast free-tier APIs (e.g., Groq has limits on tokens/minute).
+  * It is inefficient, slows down response time, and increases API failure rates.
+
+2. API CONSTRAINTS (FREE TIERS)
+--------------------------------
+- Groq (LLaMA-3 8B): ~8,192 token context window. Strict rate limits: 30 requests/min, 6,000 tokens/min. Exceeding 6,000 tokens in a minute causes API blocks.
+- Gemini Flash (via Gemini API): ~1,000,000 token context window. High limit, but has daily request limits on the free tier (15 requests/minute, 1,500 requests/day).
+- Local Ollama (LLaMA-3 8B): ~8,192 token limit. Highly dependent on local CPU/GPU/RAM.
+
+3. OUR TOKEN BUDGETING ALLOCATION (Target: 8,000 Tokens)
+--------------------------------------------------------
+To ensure our prompts work across all models (especially LLaMA-3 on Groq or local), we establish a strict 8,000 token budget per call:
+
+| Component | Target Budget | Description |
+|-----------|---------------|-------------|
+| System Prompt | 450 tokens | Contains instructions, output rules, formatting requirements. |
+| Adaptive Context (History) | 1,200 tokens | Details of weak areas, topic weights, past questions to avoid. |
+| Selected Content Chunks | 3,850 tokens | The actual text extracted from the PDF sections. |
+| Output Reservation | 2,500 tokens | Reserved space for the LLM to write the 5 MCQs in JSON format. |
+| Total Budget | 8,000 tokens | Safe, balanced prompt structure. |
+
+4. HOW WE HANDLE THREATS TO THE BUDGET
+---------------------------------------
+
+A. Dynamic Chunk Selection (Rather than Section Dumping)
+   - Instead of sending an entire section (which might be 4,000+ tokens alone), we only retrieve text chunks containing the topics we actually want to test.
+   - Example: If we are testing Section 9 and the user is weak in "Echo Lock," we only fetch the specific paragraphs in Section 9 that mention Echo Lock (Salta engagement) using our mapping table, keeping the content payload small.
+
+B. History Summarization & Compression
+   - In early iterations, we can send past questions verbatim to prevent duplicates.
+   - By Iteration 5 or 10, the list of past questions will grow too long and consume the 1,200-token history budget.
+   - Solution: When the history exceeds 1,200 tokens, we compress it. Instead of sending the full questions, we send:
+     1. Semantic embeddings of past questions (kept in ChromaDB, check done locally, not sent to LLM).
+     2. An aggregated JSON summary of the user's weaknesses (e.g., `"weak_topics": {"echo_lock": 3.5, "cooldown_matrix": 2.0}`).
+
+C. Token Verification Before Calling API
+   - We use token counters (like `tiktoken` or a fast regex-based estimation) to count prompt tokens before hitting the LLM.
+   - If the count exceeds our budget, we programmatically drop secondary context chunks until the prompt fits safely within the token window.
