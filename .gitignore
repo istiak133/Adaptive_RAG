@@ -80,3 +80,7 @@ pgdata/
 *.tmp
 *.bak
 *.orig
+
+
+# ── Personal study notes (NOT for reviewer) ──────────────────────────
+notes/
