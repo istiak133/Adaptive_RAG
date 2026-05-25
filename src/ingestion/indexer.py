@@ -14,7 +14,8 @@ import time
 from collections import OrderedDict
 from typing import Dict
 
-from sqlalchemy import create_engine, delete
+from sqlalchemy import create_engine, delete, select
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.orm import Session
 
 from src.config import settings
@@ -95,42 +96,62 @@ def run_indexer() -> Dict[str, int]:
     chunk_topics_inserted = 0
 
     with Session(engine) as session:
-        # Clear existing rows in dependency-safe order (idempotent re-run)
-        print("  Clearing existing rows...")
+        # Clear ONLY rebuildable rows (chunks + junction tables).
+        # Sections / topics are upserted because questions and topic_mastery
+        # reference them — deleting would break user history on re-index.
+        print("  Clearing rebuildable rows (chunk_topics, section_topics, chunks)...")
         session.execute(delete(ChunkTopic))
         session.execute(delete(SectionTopic))
         session.execute(delete(ChunkModel))
-        session.execute(delete(TopicModel))
-        session.execute(delete(Section))
         session.commit()
 
-        # Sections
-        print("  Inserting sections...")
+        # Sections — UPSERT on primary key
+        print("  Upserting sections...")
         for sec in section_meta.values():
-            session.add(Section(
+            stmt = pg_insert(Section).values(
                 id=sec["id"],
                 title=sec["title"],
                 page_start=sec["page_start"],
                 page_end=sec["page_end"],
                 chunk_count=sec["chunk_count"],
-            ))
+            )
+            stmt = stmt.on_conflict_do_update(
+                index_elements=["id"],
+                set_={
+                    "title": stmt.excluded.title,
+                    "page_start": stmt.excluded.page_start,
+                    "page_end": stmt.excluded.page_end,
+                    "chunk_count": stmt.excluded.chunk_count,
+                },
+            )
+            session.execute(stmt)
         session.commit()
 
-        # Topics — need IDs after commit for FK references
-        print("  Inserting topics...")
-        topic_objs = []
+        # Topics — UPSERT on slug (unique)
+        print("  Upserting topics...")
         for t in topics:
-            obj = TopicModel(
+            stmt = pg_insert(TopicModel).values(
                 name=t.name,
                 slug=t.slug,
                 description=t.description,
                 category=t.category,
                 importance=t.importance,
             )
-            session.add(obj)
-            topic_objs.append(obj)
+            stmt = stmt.on_conflict_do_update(
+                index_elements=["slug"],
+                set_={
+                    "name": stmt.excluded.name,
+                    "description": stmt.excluded.description,
+                    "category": stmt.excluded.category,
+                    "importance": stmt.excluded.importance,
+                },
+            )
+            session.execute(stmt)
         session.commit()
-        slug_to_topic_id = {t.slug: obj.id for t, obj in zip(topics, topic_objs)}
+
+        # Re-read slug→id mapping (some topics may already have existed)
+        rows = session.execute(select(TopicModel.slug, TopicModel.id)).all()
+        slug_to_topic_id = {r.slug: r.id for r in rows}
 
         # Section-topic links
         print("  Inserting section_topics...")

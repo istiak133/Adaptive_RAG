@@ -41,10 +41,15 @@ def part1_hygiene() -> None:
     project_root = Path(__file__).resolve().parent.parent
 
     # 1a. No hardcoded user paths in source / scripts / configs
-    hardcoded_patterns = [r"/Users/istiakahmed"]
+    # (pattern split so this script itself is not a false-positive)
+    hardcoded_patterns = ["/" + "Users/" + "istiakahmed"]
+    self_path = Path(__file__).resolve()
     files_to_scan = (
         list((project_root / "src").rglob("*.py"))
-        + list((project_root / "scripts").rglob("*.py"))
+        + [
+            f for f in (project_root / "scripts").rglob("*.py")
+            if f.resolve() != self_path
+        ]
         + [project_root / "config.yaml", project_root / "alembic.ini"]
         + list((project_root / "alembic").rglob("*.py"))
     )
