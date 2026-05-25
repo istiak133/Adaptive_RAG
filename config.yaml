@@ -89,11 +89,12 @@ llm:
     gemini: "gemini-2.0-flash"
     ollama: "llama3:8b"
   temperature: 0.7                # 0.0 = deterministic, 1.0 = creative
-  max_output_tokens: 2500
+  max_output_tokens: 1200         # smaller output to keep TPM headroom
   timeout_seconds: 30
   max_retries: 3
   retry_backoff: "exponential"    # exponential | linear | constant
   retry_base_delay: 1.0           # seconds
+  inter_call_delay_seconds: 3.0   # pause between LLM calls (Groq 6K TPM)
 
 
 # ── Token budget management ──────────────────────────────────────────
@@ -151,7 +152,7 @@ history:
 retrieval:
   strategy: "hybrid"              # hybrid (SQL+vector) | sql_only | vector_only
   sql_chunks_per_section: 20      # max chunks fetched per section
-  vector_top_k: 10                # ChromaDB top-K
+  vector_top_k: 5                 # ChromaDB top-K (kept small for Groq 6K TPM)
   resolve_cross_references: true  # corner case #4
   cross_reference_max_depth: 1    # only fetch directly referenced chunks
 

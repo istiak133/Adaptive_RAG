@@ -99,6 +99,7 @@ class LlmConfig(BaseModel):
     max_retries: int = Field(ge=0)
     retry_backoff: Literal["exponential", "linear", "constant"]
     retry_base_delay: float = Field(ge=0.0)
+    inter_call_delay_seconds: float = Field(default=0.0, ge=0.0)
 
 
 class TokenManagementConfig(BaseModel):

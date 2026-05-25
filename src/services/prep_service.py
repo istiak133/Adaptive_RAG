@@ -88,7 +88,9 @@ def generate_mcqs(
     )
     assert_fits(accounting)
 
-    # 4. LLM call (with fallback chain)
+    # 4. LLM call (with fallback chain + TPM pacing)
+    if settings.llm.inter_call_delay_seconds > 0:
+        time.sleep(settings.llm.inter_call_delay_seconds)
     llm = get_llm_with_fallback()
     messages = to_langchain_messages(prompt)
     response = llm.invoke(messages)

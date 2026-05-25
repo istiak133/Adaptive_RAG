@@ -5,15 +5,20 @@ Run with:
 
 Then visit:
     http://localhost:8000/docs       — interactive Swagger UI
-    http://localhost:8000/api/v1/health  — health check
+    http://localhost:8000/api/v1/...  — endpoints
 """
 
 from __future__ import annotations
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
+from src.api.routes import admin, mastery, prep, scenarios, sections, sessions
 from src.config import settings
+
+
+API_PREFIX = "/api/v1"
 
 
 app = FastAPI(
@@ -24,7 +29,8 @@ app = FastAPI(
     openapi_url=settings.api.openapi_url,
     description=(
         "Backend for an LLM-driven MCQ preparation system with "
-        "history-adaptive question generation."
+        "history-adaptive question generation. "
+        "Built on FastAPI + LangGraph + LangChain + ChromaDB + PostgreSQL."
     ),
 )
 
@@ -37,7 +43,21 @@ app.add_middleware(
 )
 
 
-@app.get("/api/v1/health", tags=["system"])
+# ── Routers ──────────────────────────────────────────────────────────
+
+
+app.include_router(sections.router, prefix=API_PREFIX)
+app.include_router(prep.router, prefix=API_PREFIX)
+app.include_router(sessions.router, prefix=API_PREFIX)
+app.include_router(mastery.router, prefix=API_PREFIX)
+app.include_router(scenarios.router, prefix=API_PREFIX)
+app.include_router(admin.router, prefix=API_PREFIX)
+
+
+# ── Health + global error handler ────────────────────────────────────
+
+
+@app.get(f"{API_PREFIX}/health", tags=["system"])
 def health() -> dict:
     return {
         "status": "ok",
@@ -45,3 +65,15 @@ def health() -> dict:
         "version": settings.app.version,
         "environment": settings.app.environment,
     }
+
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": "internal_server_error",
+            "message": str(exc),
+            "path": str(request.url.path),
+        },
+    )
