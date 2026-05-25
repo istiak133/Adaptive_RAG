@@ -84,18 +84,31 @@ def build_mcq_prompt(
     n_questions: int,
     difficulty: str = "medium",
     adaptive_context: str = "",
+    topic_hint: str = "",
 ) -> BuiltPrompt:
-    """Assemble the four-part MCQ-generation prompt."""
+    """Assemble the four-part MCQ-generation prompt.
+
+    `adaptive_context` is the WEAK/MASTERED summary built from history.
+    `topic_hint` biases this batch toward a specific topic (single-MCQ calls).
+    """
     content_block = render_content_block(chunks)
     instructions = OUTPUT_INSTRUCTIONS.format(
         n_questions=n_questions,
         difficulty=difficulty,
     )
 
-    # User message stitches everything except the system prompt
-    sections = ["CONTEXT (verbatim excerpts from the PDF):", content_block]
+    sections = []
     if adaptive_context.strip():
-        sections.insert(0, "USER WEAKNESS SIGNAL:\n" + adaptive_context.strip())
+        sections.append(
+            "USER HISTORY SIGNAL (steer question selection toward weak topics, "
+            "vary or avoid mastered ones):\n" + adaptive_context.strip()
+        )
+    if topic_hint.strip():
+        sections.append(
+            f"TOPIC FOCUS for this batch: {topic_hint.strip()}\n"
+            "Each question must primarily test understanding of the topic above."
+        )
+    sections.append("CONTEXT (verbatim excerpts from the PDF):\n" + content_block)
     sections.append(instructions)
 
     user_msg = "\n\n".join(sections)

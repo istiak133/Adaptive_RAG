@@ -62,17 +62,39 @@ def start_session(
 
 
 def _resolve_topic_id(session: Session, topic_name: str) -> Optional[int]:
-    if not topic_name.strip():
+    """Match LLM-produced topic strings to our DB topics.
+
+    Order:
+      1. Exact name match
+      2. Slug match
+      3. Substring overlap (longest match wins)
+    """
+    name = topic_name.strip()
+    if not name:
         return None
-    # Exact name match
-    tid = session.scalar(
-        select(Topic.id).where(Topic.name == topic_name.strip())
-    )
+
+    tid = session.scalar(select(Topic.id).where(Topic.name == name))
     if tid:
         return tid
-    # Slug match
-    slug = _slugify(topic_name)
-    return session.scalar(select(Topic.id).where(Topic.slug == slug))
+
+    slug = _slugify(name)
+    tid = session.scalar(select(Topic.id).where(Topic.slug == slug))
+    if tid:
+        return tid
+
+    # Fuzzy fallback: longest substring match in either direction.
+    name_l = name.lower()
+    candidates = session.execute(
+        select(Topic.id, Topic.name).order_by(func.length(Topic.name).desc())
+    ).all()
+    best_id, best_overlap = None, 0
+    for cand_id, cand_name in candidates:
+        cand_l = cand_name.lower()
+        if cand_l in name_l or name_l in cand_l:
+            overlap = min(len(cand_l), len(name_l))
+            if overlap > best_overlap and overlap >= 4:
+                best_id, best_overlap = cand_id, overlap
+    return best_id
 
 
 def _resolve_chunk_ids(session: Session, sub_ids: List[str]) -> List[int]:
