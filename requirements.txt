@@ -16,7 +16,7 @@ click==8.1.7
 
 
 # ── Database (PostgreSQL) ────────────────────────────────────────────
-sqlalchemy==2.0.36
+sqlalchemy==2.0.35
 alembic==1.13.3
 psycopg2-binary==2.9.10
 
@@ -32,18 +32,20 @@ chromadb==0.5.20
 
 
 # ── LangChain orchestration ──────────────────────────────────────────
-langchain==0.3.7
-langchain-core==0.3.18
-langchain-community==0.3.5
-langgraph==0.2.50
-langchain-groq==0.2.1
-langchain-google-genai==2.0.4
-langchain-ollama==0.2.1
+# Looser pinning so pip can auto-resolve inter-package compatibility.
+# Bounded to 0.3.x / 0.2.x respectively (no major-version drift).
+langchain>=0.3.7,<0.4.0
+langchain-core>=0.3.21,<0.4.0
+langchain-community>=0.3.5,<0.4.0
+langgraph>=0.2.50,<0.3.0
+langchain-groq>=0.2.1,<0.3.0
+langchain-google-genai>=2.0.4,<3.0.0
+langchain-ollama>=0.2.1,<0.3.0
 
 
 # ── LLM provider SDKs (used by LangChain wrappers) ───────────────────
-groq==0.11.0
-google-generativeai==0.8.3
+groq>=0.11.0,<1.0.0
+google-generativeai>=0.8.3,<1.0.0
 
 
 # ── Validation & configuration ───────────────────────────────────────
