@@ -1,0 +1,61 @@
+# =====================================================================
+# Files & folders excluded from the Docker build context.
+# Keep the context small so `docker build` is fast and reproducible.
+# =====================================================================
+
+# ── VCS / IDE ────────────────────────────────────────────────────────
+.git
+.gitignore
+.github
+.idea
+.vscode
+
+# ── Python build artefacts ───────────────────────────────────────────
+__pycache__
+*.py[cod]
+*$py.class
+*.egg-info
+.eggs
+build
+dist
+.pytest_cache
+.coverage
+.mypy_cache
+.ruff_cache
+
+# ── Virtual environments ─────────────────────────────────────────────
+.venv
+venv
+env
+ENV
+
+# ── Secrets (never bake into the image) ──────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Generated runtime data (mounted as volumes in compose) ───────────
+kb/chromadb
+logs
+outputs/scenario_a
+outputs/scenario_b_iter1
+outputs/scenario_b_iter2
+outputs/scenario_b_iter3
+
+# ── Local notes / scratch (not part of the deliverable) ──────────────
+notes
+.tmp_pdf_text
+.sixth
+chat_history_*.txt
+chat_overview_analysis.txt
+corner_cases_and_professional_touches.txt
+IMPLEMENTATION_GUIDE.md
+
+# ── OS junk ──────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Docker files themselves ──────────────────────────────────────────
+Dockerfile
+docker-compose.yml
+.dockerignore

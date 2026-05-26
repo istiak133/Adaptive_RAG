@@ -1,0 +1,61 @@
+# =====================================================================
+# Adaptive Document Preparation System — local Docker stack
+# =====================================================================
+# Spins up Postgres + the API in two containers. The application code
+# is mounted as a volume in `dev` mode so edits hot-reload through
+# uvicorn; in `prod` mode the code in the image is used.
+#
+# Usage:
+#   docker compose up -d                       # start everything
+#   docker compose exec app alembic upgrade head
+#   docker compose exec app python -m src.ingestion.indexer
+#   docker compose exec app python -m src.cli scenario-b
+#   docker compose logs -f app                 # tail API logs
+#   docker compose down                        # stop (keeps data)
+#   docker compose down -v                     # stop + delete DB volume
+# =====================================================================
+
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: prep_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-prep_kb}
+      POSTGRES_USER: ${POSTGRES_USER:-prep}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-prep_dev_change_me_in_production}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-prep} -d ${POSTGRES_DB:-prep_kb}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: prep_app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://prep:prep_dev_change_me_in_production@postgres:5432/prep_kb}
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+      APP_ENV: ${APP_ENV:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persist generated artefacts on the host so outputs survive
+      # container restarts and are visible to the reviewer.
+      - ./outputs:/app/outputs
+      - ./logs:/app/logs
+      - ./kb/chromadb:/app/kb/chromadb
+
+volumes:
+  pgdata:

@@ -15,6 +15,9 @@ from sqlalchemy.orm import Session
 from src.config import settings
 from src.kb.mastery import update_mastery_after_answer
 from src.kb.models import Session as SessionRow
+
+# Module-level pacing state — only sleep BETWEEN calls, not before first
+_last_llm_call_t: Optional[float] = None
 from src.llm.providers import get_llm_with_fallback
 from src.prep import scorer, simulator
 from src.prep.allocator import AllocationPlan, allocate
@@ -25,7 +28,9 @@ from src.rag.prompt_builder import (
 )
 from src.rag.retriever import retrieve, RetrievalResult
 from src.rag.token_budget import build_accounting, assert_fits
-from src.rag.validator import MCQ, ValidationReport, validate_response
+from src.rag.validator import (
+    MCQ, ValidationReport, get_parser, validate_response,
+)
 from src.services import session_service
 from src.services.session_service import GeneratedQuestion
 
@@ -70,13 +75,15 @@ def generate_mcqs(
         exclude_kinds=None,
     )
 
-    # 2. Build prompt
+    # 2. Build prompt (uses LangChain ChatPromptTemplate + parser format hints)
+    parser = get_parser()
     prompt = build_mcq_prompt(
         chunks=retrieval.chunks,
         n_questions=n_questions,
         difficulty=difficulty,
         adaptive_context=adaptive_context,
         topic_hint=topic_hint,
+        parser=parser,
     )
 
     # 3. Check token budget
@@ -88,12 +95,18 @@ def generate_mcqs(
     )
     assert_fits(accounting)
 
-    # 4. LLM call (with fallback chain + TPM pacing)
-    if settings.llm.inter_call_delay_seconds > 0:
-        time.sleep(settings.llm.inter_call_delay_seconds)
+    # 4. LLM call (with fallback chain + TPM pacing between calls)
+    global _last_llm_call_t
+    if (settings.llm.inter_call_delay_seconds > 0
+            and _last_llm_call_t is not None):
+        elapsed = time.time() - _last_llm_call_t
+        wait = settings.llm.inter_call_delay_seconds - elapsed
+        if wait > 0:
+            time.sleep(wait)
     llm = get_llm_with_fallback()
     messages = to_langchain_messages(prompt)
     response = llm.invoke(messages)
+    _last_llm_call_t = time.time()
     raw_output = response.content if hasattr(response, "content") else str(response)
 
     # 5. Validate

@@ -20,8 +20,13 @@ from src.config import settings
 from src.ingestion.chunker import Chunk
 
 
-# Quiet ChromaDB's verbose telemetry log
-logging.getLogger("chromadb.telemetry").setLevel(logging.WARNING)
+# Silence ChromaDB's broken posthog telemetry shim. Even with
+# anonymized_telemetry=False, chromadb still attempts a capture() call and
+# logs the failure at ERROR level (signature mismatch in their bundled
+# posthog client). Bump the whole telemetry tree to CRITICAL so nothing
+# leaks into CLI output.
+logging.getLogger("chromadb.telemetry").setLevel(logging.CRITICAL)
+logging.getLogger("chromadb.telemetry.product.posthog").setLevel(logging.CRITICAL)
 
 
 class ChromaRepo:

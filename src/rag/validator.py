@@ -1,30 +1,30 @@
-"""LLM response validation and hallucination check.
+"""LLM response parsing + validation using LangChain primitives.
 
 Pipeline:
-  1. Strip markdown fences (LLMs sometimes wrap JSON in ```json … ```)
-  2. Parse JSON
-  3. Validate structure via Pydantic (4 choices, valid answer, etc.)
-  4. Hallucination check: source_quote must appear (fuzzy) in the context
-  5. Filter and report results
+  1. LangChain JsonOutputParser handles markdown stripping + JSON extraction
+     + initial Pydantic-schema validation.
+  2. We add a hallucination check (source_quote must appear fuzzily in the
+     retrieved context) — this is our defensive layer beyond LangChain.
 """
 
 from __future__ import annotations
 
-import json
 import re
 from dataclasses import dataclass, field
 from difflib import SequenceMatcher
 from typing import List, Literal, Optional
 
+from langchain_core.output_parsers import JsonOutputParser
+from langchain_core.exceptions import OutputParserException
 from pydantic import BaseModel, Field, field_validator
 
 from src.config import settings
 
 
-# ── Pydantic models ──────────────────────────────────────────────────
-
-
 Choice = Literal["A", "B", "C", "D"]
+
+
+# ── Pydantic schema (used by LangChain parser too) ────────────────────
 
 
 class MCQ(BaseModel):
@@ -45,12 +45,25 @@ class MCQ(BaseModel):
 
     def choices_unique(self) -> bool:
         choices = [self.choice_a, self.choice_b, self.choice_c, self.choice_d]
-        normalised = [c.strip().lower() for c in choices]
-        return len(set(normalised)) == 4
+        return len({c.strip().lower() for c in choices}) == 4
 
 
 class MCQBatch(BaseModel):
     questions: List[MCQ]
+
+
+# Singleton — used by prompt builder + parser
+_parser: Optional[JsonOutputParser] = None
+
+
+def get_parser() -> JsonOutputParser:
+    global _parser
+    if _parser is None:
+        _parser = JsonOutputParser(pydantic_object=MCQBatch)
+    return _parser
+
+
+# ── Result types ─────────────────────────────────────────────────────
 
 
 @dataclass
@@ -67,38 +80,7 @@ class ValidationReport:
         return len(self.rejected) == 0
 
 
-# ── JSON extraction ──────────────────────────────────────────────────
-
-
-_MARKDOWN_FENCE_RE = re.compile(r"^\s*```(?:json)?\s*\n?|\n?```\s*$",
-                                 flags=re.IGNORECASE)
-
-
-def _strip_markdown(text: str) -> str:
-    return _MARKDOWN_FENCE_RE.sub("", text).strip()
-
-
-def _extract_json(text: str) -> str:
-    """Find the outermost JSON object in a string (best-effort)."""
-    cleaned = _strip_markdown(text)
-    # Find the first '{' and the matching last '}'
-    first = cleaned.find("{")
-    last = cleaned.rfind("}")
-    if first == -1 or last == -1 or last <= first:
-        return cleaned
-    return cleaned[first : last + 1]
-
-
-def parse_llm_json(raw_text: str) -> dict:
-    """Robustly parse LLM JSON output. Raises ValueError on failure."""
-    json_text = _extract_json(raw_text)
-    try:
-        return json.loads(json_text)
-    except json.JSONDecodeError as e:
-        raise ValueError(f"Could not parse JSON: {e}. Raw: {raw_text[:200]}")
-
-
-# ── Hallucination check ─────────────────────────────────────────────
+# ── Hallucination check ──────────────────────────────────────────────
 
 
 def quote_appears_in_context(
@@ -106,22 +88,20 @@ def quote_appears_in_context(
     context: str,
     threshold: Optional[float] = None,
 ) -> bool:
-    """Fuzzy substring match — handles minor LLM paraphrasing."""
+    """Fuzzy substring match for the LLM's source_quote."""
     threshold = threshold or settings.mcq.hallucination_fuzzy_threshold
     quote_norm = re.sub(r"\s+", " ", quote.strip().lower())
     context_norm = re.sub(r"\s+", " ", context.lower())
     if quote_norm in context_norm:
         return True
-    # Fuzzy: longest matching subsequence ratio
-    matcher = SequenceMatcher(None, quote_norm, context_norm,
-                              autojunk=False)
+    matcher = SequenceMatcher(None, quote_norm, context_norm, autojunk=False)
     longest = matcher.find_longest_match(0, len(quote_norm),
                                           0, len(context_norm))
     coverage = longest.size / max(len(quote_norm), 1)
     return coverage >= threshold
 
 
-# ── Full validation pipeline ────────────────────────────────────────
+# ── Public validation entry point ────────────────────────────────────
 
 
 def validate_response(
@@ -130,6 +110,12 @@ def validate_response(
     expected_count: int,
     require_source_quote: Optional[bool] = None,
 ) -> ValidationReport:
+    """Parse and validate the LLM's raw response.
+
+    LangChain's JsonOutputParser does the heavy lifting (markdown fences,
+    JSON extraction, Pydantic schema validation). We then apply our
+    hallucination guard.
+    """
     require_source_quote = (
         require_source_quote
         if require_source_quote is not None
@@ -137,35 +123,41 @@ def validate_response(
     )
 
     report = ValidationReport()
+    parser = get_parser()
 
-    # Step 1: Parse JSON
     try:
-        parsed = parse_llm_json(raw_text)
-    except ValueError as e:
-        report.add_rejection({}, f"json_parse_error: {e}")
+        parsed_dict = parser.invoke(raw_text)
+    except (OutputParserException, ValueError) as e:
+        report.add_rejection({}, f"langchain_parse_error: {e}")
+        return report
+    except Exception as e:
+        report.add_rejection({}, f"unexpected_parser_error: {e}")
         return report
 
-    raw_questions = parsed.get("questions", [])
+    raw_questions = parsed_dict.get("questions", []) if isinstance(parsed_dict, dict) else []
     report.raw_parsed_count = len(raw_questions)
 
-    # Step 2-4: Validate each MCQ
-    for idx, item in enumerate(raw_questions):
+    for item in raw_questions:
+        # Pydantic re-validation (parser may give dicts in some versions)
         try:
-            mcq = MCQ(**item)
+            mcq = item if isinstance(item, MCQ) else MCQ(**item)
         except Exception as e:
             report.add_rejection(item, f"schema_error: {e}")
             continue
 
         if not mcq.choices_unique():
-            report.add_rejection(item, "duplicate_choices")
+            report.add_rejection(mcq.model_dump(), "duplicate_choices")
             continue
 
-        if require_source_quote:
-            if not quote_appears_in_context(mcq.source_quote, context):
-                report.add_rejection(item,
-                    f"hallucination: source_quote not found "
-                    f"(quote: {mcq.source_quote[:80]!r})")
-                continue
+        if require_source_quote and not quote_appears_in_context(
+            mcq.source_quote, context,
+        ):
+            report.add_rejection(
+                mcq.model_dump(),
+                f"hallucination: source_quote not found "
+                f"(quote: {mcq.source_quote[:80]!r})",
+            )
+            continue
 
         report.accepted.append(mcq)
 
@@ -184,7 +176,7 @@ if __name__ == "__main__":
       "choice_c": "Aymara recitation",
       "choice_d": "Mountain altitude over 5,000 m",
       "correct_answer": "A",
-      "explanation": "Per §2.13, Echo Lock is triggered by acoustic shock ≥ 145 dB within the targeting window.",
+      "explanation": "Per §2.13, Echo Lock is triggered by acoustic shock ≥ 145 dB.",
       "source_quote": "Acoustic shock during the targeting window (≥ 145 dB)",
       "topic": "Echo Lock"
     }
@@ -192,53 +184,25 @@ if __name__ == "__main__":
 }
 ```"""
     context = (
-        "Echo Lock is a neurological seizure-equivalent observed twice. "
-        "Triggering conditions include: Attempted suspension above the 240 kg ceiling. "
-        "Acoustic shock during the targeting window (≥ 145 dB). "
-        "Severe hypoglycemia (blood glucose < 58 mg/dL)."
+        "Echo Lock is a neurological seizure-equivalent. "
+        "Triggering conditions include: "
+        "Acoustic shock during the targeting window (≥ 145 dB)."
     )
     report = validate_response(sample, context, expected_count=1)
     print(f"  Accepted: {len(report.accepted)}, Rejected: {len(report.rejected)}")
-    if report.accepted:
-        m = report.accepted[0]
-        print(f"  MCQ: {m.question_text}")
-        print(f"  Correct: {m.correct_answer} | Topic: {m.topic}")
-    print()
 
-    print("=== Test 2: Hallucinated quote ===")
-    bad_sample = sample.replace(
+    print("\n=== Test 2: Hallucinated quote ===")
+    bad = sample.replace(
         'Acoustic shock during the targeting window (≥ 145 dB)',
-        'The Calexin-7 antidote prevents Echo Lock entirely'
+        'Calexin-7 antidote prevents Echo Lock entirely',
     )
-    report = validate_response(bad_sample, context, expected_count=1)
-    print(f"  Accepted: {len(report.accepted)}, Rejected: {len(report.rejected)}")
-    for r in report.rejected:
-        print(f"  Reason: {r['reason'][:90]}")
-    print()
+    r2 = validate_response(bad, context, expected_count=1)
+    print(f"  Rejected: {len(r2.rejected)}")
+    for r in r2.rejected:
+        print(f"    {r['reason'][:90]}")
 
-    print("=== Test 3: Duplicate choices ===")
-    dup_sample = """{
-  "questions": [
-    {
-      "question_text": "What is the Echo Lock duration?",
-      "choice_a": "4 seconds", "choice_b": "4 seconds",
-      "choice_c": "4 seconds", "choice_d": "4 seconds",
-      "correct_answer": "A",
-      "explanation": "Echo Lock lasts four seconds per §2.13.",
-      "source_quote": "a 4-second targeting freeze",
-      "topic": "Echo Lock"
-    }
-  ]
-}"""
-    report = validate_response(dup_sample, "a 4-second targeting freeze", expected_count=1)
-    print(f"  Accepted: {len(report.accepted)}, Rejected: {len(report.rejected)}")
-    for r in report.rejected:
-        print(f"  Reason: {r['reason']}")
-    print()
-
-    print("=== Test 4: Invalid JSON ===")
-    broken = "Here are your MCQs: { invalid json }"
-    report = validate_response(broken, "any context", expected_count=1)
-    print(f"  Accepted: {len(report.accepted)}, Rejected: {len(report.rejected)}")
-    for r in report.rejected:
-        print(f"  Reason: {r['reason'][:80]}")
+    print("\n=== Test 3: Bad JSON ===")
+    r3 = validate_response("not json at all", context, expected_count=1)
+    print(f"  Rejected: {len(r3.rejected)}")
+    for r in r3.rejected:
+        print(f"    {r['reason'][:90]}")

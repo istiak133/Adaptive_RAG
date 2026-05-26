@@ -197,14 +197,126 @@ def prep_cmd(
         click.secho(f"\n✓ Outputs saved to {out_dir}", fg="green")
 
 
+# ── scenario-a ───────────────────────────────────────────────────────
+
+
+@cli.command("scenario-a")
+@click.option(
+    "--sections", "-s",
+    type=int, multiple=True, default=(1, 2),
+    callback=_validate_sections, show_default=True,
+    help="Section IDs to study (default 1 2).",
+)
+@click.option(
+    "--questions", "-q", "questions_per_section",
+    type=click.IntRange(1, 20), default=5, show_default=True,
+)
+@click.option(
+    "--simulate",
+    type=click.Choice(["weighted", "random", "all_correct"]),
+    default="weighted", show_default=True,
+)
+@click.option("--seed", type=int, default=42, show_default=True)
+@click.option(
+    "--reset-state/--keep-state",
+    default=True,
+    help="Clear mastery before running for a true cold-start.",
+)
+def scenario_a_cmd(
+    sections,
+    questions_per_section,
+    simulate,
+    seed,
+    reset_state,
+):
+    """Scenario A — cold-start prep over any two sections."""
+    _print_header(f"SCENARIO A — cold-start over sections {list(sections)}")
+    click.echo(f"  questions/section: {questions_per_section}")
+    click.echo(f"  simulate:          {simulate}")
+    click.echo(f"  reset_state:       {reset_state}")
+    click.echo()
+
+    if reset_state:
+        with Session(_engine()) as db:
+            clear_all_mastery(db)
+        click.secho("  ↺ Mastery state cleared (true cold start)", fg="yellow")
+
+    outputs_dir = Path(settings.paths.outputs_dir) / "scenario_a"
+    t0 = time.time()
+
+    with Session(_engine()) as db:
+        result = run_prep_session(
+            session=db,
+            section_ids=list(sections),
+            questions_per_section=questions_per_section,
+            simulate_strategy=simulate,
+            seed=seed,
+        )
+        export_questions(db, result.session_id, outputs_dir / "questions.json")
+        export_snapshot(
+            db, outputs_dir / "kb_snapshot.json",
+            after_session_id=result.session_id,
+        )
+
+    r = result.score_report
+    elapsed = round(time.time() - t0, 1)
+    click.echo()
+    _print_score(r.score_pct, r.correct, r.total)
+    click.echo(f"  session_id: {result.session_id}")
+    click.echo(f"  elapsed:    {elapsed}s")
+    click.secho(f"\n  ✓ Wrote {outputs_dir}/questions.json", fg="green")
+    click.secho(f"  ✓ Wrote {outputs_dir}/kb_snapshot.json", fg="green")
+
+
 # ── scenario-b ───────────────────────────────────────────────────────
 
 
-SCENARIO_B_PLAN = [
+DEFAULT_SCENARIO_B_PLAN = [
     {"iter": 1, "sections": [5, 8]},
     {"iter": 2, "sections": [6, 8, 9]},
     {"iter": 3, "sections": [8]},
 ]
+
+
+def _parse_plan(plan_str: str) -> List[dict]:
+    """Parse a `--plan` string like '5,8 / 6,8,9 / 8' into the iteration list.
+
+    Each `/`-separated group is one iteration; commas separate section IDs
+    within an iteration. Whitespace is ignored.
+    """
+    iterations = []
+    groups = [g.strip() for g in plan_str.split("/") if g.strip()]
+    if not groups:
+        raise click.BadParameter("plan is empty")
+    for idx, group in enumerate(groups, 1):
+        try:
+            secs = [int(s.strip()) for s in group.split(",") if s.strip()]
+        except ValueError:
+            raise click.BadParameter(
+                f"iteration {idx}: section IDs must be integers (got {group!r})"
+            )
+        if not secs:
+            raise click.BadParameter(f"iteration {idx} has no sections")
+        iterations.append({"iter": idx, "sections": secs})
+    return iterations
+
+
+def _validate_plan_sections(db: Session, plan: List[dict]) -> None:
+    """Ensure every section ID in the plan exists in the KB. Surfaces a clear
+    error so the reviewer knows immediately if their PDF uses different
+    numbering — rather than getting a cryptic empty-retrieval failure later."""
+    available = set(db.scalars(select(Section.id)).all())
+    requested = {s for it in plan for s in it["sections"]}
+    missing = requested - available
+    if missing:
+        avail_sorted = sorted(available)
+        raise click.UsageError(
+            f"Plan references section(s) that don't exist in the KB: "
+            f"{sorted(missing)}. Available sections in this KB: {avail_sorted}. "
+            f"Use `--plan` to map to your PDF's actual section numbering, "
+            f"e.g. `--plan \"{avail_sorted[0]},{avail_sorted[1]} / "
+            f"{avail_sorted[1]},{avail_sorted[2]} / {avail_sorted[1]}\"`."
+        )
 
 
 @cli.command("scenario-b")
@@ -225,17 +337,33 @@ SCENARIO_B_PLAN = [
     default=True,
     help="Clear mastery state before running (recommended for clean Scenario B).",
 )
+@click.option(
+    "--plan",
+    type=str,
+    default=None,
+    help=(
+        "Override the 3-iteration section plan. Format: "
+        "'<iter1> / <iter2> / <iter3>' where each iter is a comma-separated "
+        "list of section IDs. Example: '5,8 / 6,8,9 / 8' (the default). "
+        "Use this if your PDF substitute uses different section numbering."
+    ),
+)
 def scenario_b_cmd(
     questions_per_section: int,
     simulate: str,
     seed: int,
     reset_state: bool,
+    plan: Optional[str],
 ):
     """Run the 3-iteration Scenario B and write all required JSON outputs."""
+    scenario_plan = _parse_plan(plan) if plan else DEFAULT_SCENARIO_B_PLAN
+
+    with Session(_engine()) as db:
+        _validate_plan_sections(db, scenario_plan)
+
     _print_header("SCENARIO B — 3 consecutive iterations")
-    click.echo(f"  Iter 1: sections {SCENARIO_B_PLAN[0]['sections']}")
-    click.echo(f"  Iter 2: sections {SCENARIO_B_PLAN[1]['sections']}")
-    click.echo(f"  Iter 3: sections {SCENARIO_B_PLAN[2]['sections']}")
+    for entry in scenario_plan:
+        click.echo(f"  Iter {entry['iter']}: sections {entry['sections']}")
     click.echo(f"  questions/section: {questions_per_section}")
     click.echo(f"  reset_state:       {reset_state}")
     click.echo()
@@ -249,9 +377,9 @@ def scenario_b_cmd(
         click.secho("  ↺ Mastery state cleared", fg="yellow")
 
     results = []
-    for plan in SCENARIO_B_PLAN:
-        n = plan["iter"]
-        secs = plan["sections"]
+    for entry in scenario_plan:
+        n = entry["iter"]
+        secs = entry["sections"]
         click.echo()
         click.secho(f"─── Iter {n} (sections {secs}) ───", fg="cyan", bold=True)
 
