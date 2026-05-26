@@ -1,14 +1,57 @@
 """Assemble the prep-flow state machine.
 
-Flow:
-    START
-      → detect_mode          (cold-start? load mastery? pick difficulty?)
-      → create_session       (DB row)
-      → generate             (per-section allocation + per-seed LLM w/ retry)
-      → record               (persist questions + topics)
-      → simulate_and_score   (answers → mastery updates → score)
-      → complete             (finalize session + metadata)
-      → END
+Real conditional edges:
+  • After detect_mode    → cold-start skips load_adaptive_context
+  • After validate       → retry generate, or proceed to record
+
+                    ┌───────────┐
+                    │   START   │
+                    └─────┬─────┘
+                          ▼
+                  ┌─────────────────┐
+                  │   detect_mode   │
+                  └────────┬────────┘
+                           │
+              is_cold_start? (conditional)
+              ┌────────────┴────────────┐
+              ▼                         ▼
+       (yes / cold)              (no / adaptive)
+              │                         │
+              │              ┌──────────────────────┐
+              │              │ load_adaptive_context│
+              │              └──────────┬───────────┘
+              ▼                         ▼
+                  ┌─────────────────┐
+                  │ create_session  │
+                  └────────┬────────┘
+                           ▼
+                  ┌─────────────────┐
+            ┌────▶│    generate     │
+            │     └────────┬────────┘
+            │              ▼
+            │     ┌─────────────────┐
+            │     │    validate     │
+            │     └────────┬────────┘
+            │              │
+        retry?  (conditional)
+            │              │
+            └──── yes ◀────┤ no
+                           ▼
+                  ┌─────────────────┐
+                  │     record      │
+                  └────────┬────────┘
+                           ▼
+                  ┌──────────────────────┐
+                  │ simulate_and_score   │
+                  └──────────┬───────────┘
+                             ▼
+                  ┌─────────────────┐
+                  │    complete     │
+                  └────────┬────────┘
+                           ▼
+                  ┌─────────────────┐
+                  │      END        │
+                  └─────────────────┘
 """
 
 from __future__ import annotations
@@ -33,10 +76,14 @@ def build_prep_graph(session: Session) -> Callable:
 
     builder.add_node("detect_mode",
                      partial(nodes.detect_mode_node, session=session))
+    builder.add_node("load_adaptive_context",
+                     partial(nodes.load_adaptive_context_node, session=session))
     builder.add_node("create_session",
                      partial(nodes.create_session_node, session=session))
     builder.add_node("generate",
                      partial(nodes.generate_node, session=session))
+    builder.add_node("validate",
+                     partial(nodes.validate_generation_node, session=session))
     builder.add_node("record",
                      partial(nodes.record_node, session=session))
     builder.add_node("simulate_and_score",
@@ -45,13 +92,29 @@ def build_prep_graph(session: Session) -> Callable:
                      partial(nodes.complete_node, session=session))
 
     builder.add_edge(START, "detect_mode")
+
+    # Real cold-vs-adaptive conditional branch
     builder.add_conditional_edges(
         "detect_mode",
         nodes.route_after_detect,
-        {"create_session": "create_session"},
+        {
+            "create_session": "create_session",
+            "load_adaptive_context": "load_adaptive_context",
+        },
     )
+    builder.add_edge("load_adaptive_context", "create_session")
     builder.add_edge("create_session", "generate")
-    builder.add_edge("generate", "record")
+    builder.add_edge("generate", "validate")
+
+    # Real retry conditional branch
+    builder.add_conditional_edges(
+        "validate",
+        nodes.route_after_validation,
+        {
+            "generate": "generate",  # loop back on missing MCQs
+            "record": "record",
+        },
+    )
     builder.add_edge("record", "simulate_and_score")
     builder.add_edge("simulate_and_score", "complete")
     builder.add_edge("complete", END)
@@ -60,21 +123,37 @@ def build_prep_graph(session: Session) -> Callable:
 
 
 def get_graph_diagram() -> str:
-    """Return a Mermaid diagram of the compiled graph (for docs/viva)."""
-    from langgraph.graph import StateGraph
+    """Mermaid diagram for docs/viva.
 
+    Uses a parallel skeleton (without DB) so it can be rendered without
+    a live SQLAlchemy session.
+    """
     builder: StateGraph = StateGraph(PrepState)
-    builder.add_node("detect_mode", lambda s: s)
-    builder.add_node("create_session", lambda s: s)
-    builder.add_node("generate", lambda s: s)
-    builder.add_node("record", lambda s: s)
-    builder.add_node("simulate_and_score", lambda s: s)
-    builder.add_node("complete", lambda s: s)
+    for n in (
+        "detect_mode", "load_adaptive_context", "create_session",
+        "generate", "validate", "record", "simulate_and_score", "complete",
+    ):
+        builder.add_node(n, lambda s: s)
+
     builder.add_edge(START, "detect_mode")
-    builder.add_edge("detect_mode", "create_session")
+    builder.add_conditional_edges(
+        "detect_mode",
+        nodes.route_after_detect,
+        {
+            "create_session": "create_session",
+            "load_adaptive_context": "load_adaptive_context",
+        },
+    )
+    builder.add_edge("load_adaptive_context", "create_session")
     builder.add_edge("create_session", "generate")
-    builder.add_edge("generate", "record")
+    builder.add_edge("generate", "validate")
+    builder.add_conditional_edges(
+        "validate",
+        nodes.route_after_validation,
+        {"generate": "generate", "record": "record"},
+    )
     builder.add_edge("record", "simulate_and_score")
     builder.add_edge("simulate_and_score", "complete")
     builder.add_edge("complete", END)
+
     return builder.compile().get_graph().draw_mermaid()

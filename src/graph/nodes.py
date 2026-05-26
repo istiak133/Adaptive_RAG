@@ -50,14 +50,13 @@ def _zero_token_usage() -> Dict[str, int]:
 
 
 def detect_mode_node(state: PrepState, *, session: Session) -> Dict[str, Any]:
-    """Decide cold-start vs adaptive, build adaptive context, pick difficulty."""
+    """Decide cold-start vs adaptive; pick difficulty.
+
+    Does NOT build the adaptive context — that's a separate node so the
+    cold-start branch can skip it entirely.
+    """
     section_ids = state["section_ids"]
-
     is_cold_start = not _has_prior_history(session, section_ids)
-
-    adaptive_context = ""
-    if not is_cold_start:
-        adaptive_context = build_adaptive_context(session, section_ids)
 
     difficulty = state.get("difficulty")
     if difficulty is None:
@@ -69,13 +68,26 @@ def detect_mode_node(state: PrepState, *, session: Session) -> Dict[str, Any]:
 
     return {
         "is_cold_start": is_cold_start,
-        "adaptive_context": adaptive_context,
         "difficulty": difficulty,
+        "adaptive_context": "",   # filled in by load_adaptive_context (adaptive branch only)
     }
 
 
-def create_session_node(state: PrepState, *, session: Session) -> Dict[str, Any]:
-    """Insert the sessions row and record the run's metadata."""
+def load_adaptive_context_node(
+    state: PrepState, *, session: Session,
+) -> Dict[str, Any]:
+    """Build WEAK/MASTERED context from history.
+
+    Skipped on cold-start runs via the route_after_detect router.
+    """
+    ac = build_adaptive_context(session, state["section_ids"])
+    return {"adaptive_context": ac}
+
+
+def create_session_node(
+    state: PrepState, *, session: Session,
+) -> Dict[str, Any]:
+    """Insert the sessions row + initialise accumulators."""
     sid = session_service.start_session(
         session,
         section_ids=state["section_ids"],
@@ -94,6 +106,7 @@ def create_session_node(state: PrepState, *, session: Session) -> Dict[str, Any]
         "token_usage": _zero_token_usage(),
         "rejected_count": 0,
         "allocation_summary": {},
+        "retry_count": 0,
     }
 
 
@@ -106,15 +119,28 @@ def generate_node(state: PrepState, *, session: Session) -> Dict[str, Any]:
     adaptive_context = state["adaptive_context"]
     difficulty = state["difficulty"]
 
-    all_generated: List[GeneratedQuestion] = []
-    chunks_used: Dict[int, List[str]] = {}
-    token_usage = dict(state["token_usage"])
+    # On retry runs we keep what we already generated and only fill the gap.
+    all_generated: List[GeneratedQuestion] = list(state.get("all_generated") or [])
+    chunks_used: Dict[int, List[str]] = dict(state.get("chunks_used") or {})
+    token_usage = dict(state.get("token_usage") or _zero_token_usage())
     rejected_count = state.get("rejected_count", 0)
-    allocation_summary: Dict[int, Dict[str, Any]] = {}
+    allocation_summary: Dict[int, Dict[str, Any]] = (
+        dict(state.get("allocation_summary") or {})
+    )
+    retry_count = state.get("retry_count", 0)
+
+    expected_total = n_per_section * len(section_ids)
+    already_have = len(all_generated)
 
     for sec_id in section_ids:
-        plan = allocate(session, sec_id, n_per_section)
-        allocation_summary[sec_id] = {
+        # How many do we already have from this section?
+        have_in_sec = sum(1 for g in all_generated if g.section_id == sec_id)
+        need_in_sec = n_per_section - have_in_sec
+        if need_in_sec <= 0:
+            continue
+
+        plan = allocate(session, sec_id, need_in_sec)
+        allocation_summary.setdefault(sec_id, {
             "mode": plan.mode,
             "seeds": plan.seeds,
             "weights": [
@@ -125,11 +151,10 @@ def generate_node(state: PrepState, *, session: Session) -> Dict[str, Any]:
                 }
                 for a in plan.allocations[:5]
             ],
-        }
-        chunks_used[sec_id] = []
+        })
+        chunks_used.setdefault(sec_id, [])
 
         for seed_topic in plan.seeds:
-            # Retry loop — up to settings.llm.max_retries
             mcq_added = False
             for attempt in range(settings.llm.max_retries):
                 gen = generate_mcqs(
@@ -158,7 +183,7 @@ def generate_node(state: PrepState, *, session: Session) -> Dict[str, Any]:
                 rejected_count += len(gen.rejected)
 
             if not mcq_added:
-                rejected_count += 1  # exhausted retries
+                rejected_count += 1
 
     return {
         "all_generated": all_generated,
@@ -166,7 +191,19 @@ def generate_node(state: PrepState, *, session: Session) -> Dict[str, Any]:
         "token_usage": token_usage,
         "rejected_count": rejected_count,
         "allocation_summary": allocation_summary,
+        "retry_count": retry_count + 1,
     }
+
+
+def validate_generation_node(
+    state: PrepState, *, session: Session,
+) -> Dict[str, Any]:
+    """Decide whether generation produced enough MCQs to proceed."""
+    expected_total = (
+        state["questions_per_section"] * len(state["section_ids"])
+    )
+    actual = len(state.get("all_generated") or [])
+    return {"generation_complete": actual >= expected_total}
 
 
 def record_node(state: PrepState, *, session: Session) -> Dict[str, Any]:
@@ -180,7 +217,9 @@ def record_node(state: PrepState, *, session: Session) -> Dict[str, Any]:
     return {"question_ids": qids}
 
 
-def simulate_and_score_node(state: PrepState, *, session: Session) -> Dict[str, Any]:
+def simulate_and_score_node(
+    state: PrepState, *, session: Session,
+) -> Dict[str, Any]:
     """Simulate user answers, record them, update mastery, score the session."""
     sim_pairs = simulator.simulate_answers(
         session,
@@ -226,11 +265,21 @@ def complete_node(state: PrepState, *, session: Session) -> Dict[str, Any]:
     return {}
 
 
-# ── Conditional routers ──────────────────────────────────────────────
+# ── Conditional routers (REAL branching) ─────────────────────────────
 
 
 def route_after_detect(state: PrepState) -> str:
-    """Single edge for now — both paths converge into create_session.
-    Kept as an explicit router so future variants can branch (e.g., skip
-    record/simulate during dry-runs)."""
-    return "create_session"
+    """Cold-start skips adaptive-context loading."""
+    if state["is_cold_start"]:
+        return "create_session"
+    return "load_adaptive_context"
+
+
+def route_after_validation(state: PrepState) -> str:
+    """Proceed if we have enough MCQs; otherwise loop back to generate
+    until max_retries is hit."""
+    if state.get("generation_complete", False):
+        return "record"
+    if state.get("retry_count", 0) >= settings.llm.max_retries:
+        return "record"   # give up after exhausting retries
+    return "generate"     # loop back

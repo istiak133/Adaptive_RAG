@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from src.api.dependencies import get_db
 from src.api.schemas import PrepSessionResponse, PrepStartRequest, QuestionView
-from src.kb.models import Question, SectionTopicMastery
+from src.kb.models import Question
 from src.kb.models import Session as SessionRow
 from src.services.prep_service import run_prep_session
 
@@ -41,14 +42,7 @@ def start_prep(req: PrepStartRequest, db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(500, f"Prep session failed: {e}")
 
-    # Compose questions with answers
-    qs = db.scalars(
-        Question.__table__.select().where(
-            Question.session_id == result.session_id,
-        )
-    ).all()
-    # actually use ORM-style
-    from sqlalchemy import select
+    # Fetch this session's questions for the response payload
     rows = db.execute(
         select(Question).where(Question.session_id == result.session_id)
     ).scalars().all()
