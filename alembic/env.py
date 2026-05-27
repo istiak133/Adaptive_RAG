@@ -2,8 +2,8 @@
 
 DATABASE_URL is read from src.config (which loads .env) and passed directly
 to the engine / offline-mode context. We deliberately bypass ConfigParser's
-sqlalchemy.url option because the Supabase URL contains URL-encoded
-characters (%25, %26) that ConfigParser tries to interpolate.
+sqlalchemy.url option because URL-encoded password characters (`%25`, `%26`,
+etc.) trigger ConfigParser's percent-interpolation and break the URL.
 """
 
 from __future__ import annotations
