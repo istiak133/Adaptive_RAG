@@ -6,6 +6,16 @@ answers, and — on subsequent runs over the same sections — leans on the
 user's mistake history to push question selection toward the topics they
 keep getting wrong.
 
+Every generated MCQ has four choices, one correct answer, a short
+explanation, and a verbatim `source_quote` from the PDF that justifies
+the right answer. The source-quote is also used as a hallucination
+check: if the LLM cites something that isn't fuzzily present in the
+retrieved context, the question is rejected before it ever reaches the
+user. A second guard rejects near-duplicates of questions the user has
+already seen in past sessions, so the brief's "avoid excessive
+repetition" requirement holds even when the LLM ignores the prompt-side
+instruction to vary its output.
+
 Built for the Cloudly AI/ML intern take-home. The corpus is
 `SLATEFALL_DOSSIER.pdf`, a 50-page fictional dossier with ten sections.
 The adaptive loop is the part the assessment cares about most, and it's
@@ -92,7 +102,7 @@ be rotated after the review window closes.
 If you have Docker Desktop installed, this is the fastest path.
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/istiak133/Adaptive_RAG
 cd cloudly-intern
 
 cp .env.example .env
@@ -703,9 +713,13 @@ The five "Important Notes" from the brief are addressed as follows:
 3. **Section-numbering mapping.** Parser regex accepts any integer
    numbering. The `scenario-b --plan` flag lets a reviewer remap the
    iterations if their substitute PDF uses different numbers.
-4. **LLM output non-determinism.** Structural validation (Pydantic
-   schema + unique-choice check) plus a source-quote hallucination
-   check. Failed generations are retried up to 3× per topic seed.
+4. **LLM output non-determinism.** Three validation guards before an
+   MCQ reaches the user: Pydantic structural check (4 unique choices,
+   valid `A`/`B`/`C`/`D`, non-empty explanation), source-quote
+   hallucination check (fuzzy match against retrieved context), and a
+   near-duplicate guard (rejects when `question_text` similarity exceeds
+   0.65 against any previously-asked question for these sections).
+   Failed generations retry up to 3× per topic seed.
 5. **CLI-first.** `scenario-b` runs the full three-iteration adaptive
    flow in one command. REST exists alongside but isn't required.
 
@@ -719,10 +733,12 @@ The five "Important Notes" from the brief are addressed as follows:
   they come through as space-separated rows. The data is preserved and
   the LLM can read it, but it isn't formal markdown.
 - **LLM non-determinism.** Same prompt + same temperature still varies
-  across runs. The hallucination check (source-quote fuzzy match against
-  the chunk) catches the worst cases; structural validation (4 unique
-  choices, valid `A`/`B`/`C`/`D`, no empty fields) handles the rest.
-  Failed MCQs are retried up to 3× per topic seed.
+  across runs. Three validators catch the worst cases: structural
+  (Pydantic schema + 4 unique choices), source-quote hallucination
+  (fuzzy match against retrieved context), and near-duplicate detection
+  against past `question_text` for these sections (rejects at
+  SequenceMatcher ratio ≥ 0.65, tuned empirically). Failed MCQs retry
+  up to 3× per topic seed.
 - **Rate limits.** Groq's free tier is 6,000 tokens/min. The service
   paces LLM calls with a 3-second floor between them; if Groq still
   429s, the LangChain fallback chain switches to Gemini transparently.

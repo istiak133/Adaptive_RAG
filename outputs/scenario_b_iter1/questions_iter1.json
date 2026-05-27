@@ -1,0 +1,271 @@
+{
+  "session_id": 17,
+  "sections_studied": [
+    5,
+    8
+  ],
+  "is_cold_start": true,
+  "score_pct": 80.0,
+  "exported_at": "2026-05-26T14:33:11.143996+00:00",
+  "questions": [
+    {
+      "id": 42,
+      "section_id": 5,
+      "source_chunk_ids": [
+        646,
+        652,
+        644,
+        651,
+        645,
+        622,
+        665
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the minimum required authority for engaging Tier 4 threats?",
+      "choices": {
+        "A": "Field operative, solo",
+        "B": "Lead officer, cell required",
+        "C": "Lead officer + auxiliary on standby",
+        "D": "Director-General authorization"
+      },
+      "correct_answer": "C",
+      "explanation": "The text states that for Tier 4 threats, a lead officer is required, with an auxiliary on standby.",
+      "source_quote": "Tier 4 500 kJ – 50 MJ 101–5,000 civilians Lead officer + auxiliary on standby",
+      "user_answer": "C",
+      "is_correct": true
+    },
+    {
+      "id": 43,
+      "section_id": 5,
+      "source_chunk_ids": [
+        645,
+        651,
+        648,
+        646,
+        652,
+        601,
+        665
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the purpose of the 'Drop-Tune' manoeuvre?",
+      "choices": {
+        "A": "To increase the asset's speed during engagement",
+        "B": "To allow the asset to suspend an object within ~0.3 seconds prior to trigger",
+        "C": "To enable the asset to engage targets without verifying the contact-exclusion radius",
+        "D": "To compress the reconnaissance schedule for solo deployments"
+      },
+      "correct_answer": "B",
+      "explanation": "The 'Drop-Tune' manoeuvre is a standard activation pattern that exploits the contact-exclusion rule, allowing the asset to release an object within ~0.3 seconds prior to trigger.",
+      "source_quote": "She can, however, suspend an object that she releases within ~0.3 seconds prior to trigger.",
+      "user_answer": "B",
+      "is_correct": true
+    },
+    {
+      "id": 44,
+      "section_id": 5,
+      "source_chunk_ids": [
+        652,
+        649,
+        650,
+        648,
+        644,
+        601,
+        604,
+        622
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the maximum number of objects that can be simultaneously held in a Suspended Field using the tertiary Hold ability?",
+      "choices": {
+        "A": "3",
+        "B": "4",
+        "C": "5",
+        "D": "6"
+      },
+      "correct_answer": "B",
+      "explanation": "The maximum number of objects that can be simultaneously held in a Suspended Field is determined by the available activations within a 60-second window minus a 1-second suspension reserve.",
+      "source_quote": "Maximum simultaneously held objects: 4 (matching available activations within a 60-s window minus a 1-suspension reserve)",
+      "user_answer": "B",
+      "is_correct": true
+    },
+    {
+      "id": 45,
+      "section_id": 5,
+      "source_chunk_ids": [
+        646,
+        644,
+        651,
+        652,
+        653,
+        622,
+        665
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the primary authority required for a Tier 3 threat engagement?",
+      "choices": {
+        "A": "Field operative, solo",
+        "B": "Lead officer, cell required",
+        "C": "Director-General authorization",
+        "D": "Cell Cóndor"
+      },
+      "correct_answer": "B",
+      "explanation": "According to the Threat Tier definitions, a Tier 3 threat requires a cell to be present, with the lead officer having full authority.",
+      "source_quote": "Tier 3 Cell required, lead authority",
+      "user_answer": "B",
+      "is_correct": true
+    },
+    {
+      "id": 46,
+      "section_id": 5,
+      "source_chunk_ids": [
+        647,
+        648,
+        644,
+        649,
+        652,
+        601,
+        604,
+        622,
+        610,
+        599
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the primary benefit of Tail Momentum in the Tail-Strike technique?",
+      "choices": {
+        "A": "It allows for a more precise targeting window.",
+        "B": "It enables the delivery of compounded impacts that cannot be achieved by linear projectile motion alone.",
+        "C": "It reduces the metabolic cost of suspension.",
+        "D": "It increases the average target mass per activation."
+      },
+      "correct_answer": "B",
+      "explanation": "Tail Momentum is the payoff of the Doctrine of Sequential Suspension, allowing for the delivery of compounded impacts that cannot be achieved by linear projectile motion alone. This property is termed Tail Momentum and underpins the Tail-Strike combat technique.",
+      "source_quote": "Tail momentum is the payoff. Plan terminal vectors before activating.",
+      "user_answer": "D",
+      "is_correct": false
+    },
+    {
+      "id": 47,
+      "section_id": 8,
+      "source_chunk_ids": [
+        684,
+        681,
+        687,
+        683,
+        682,
+        658
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the standard quantity of Calexin-7 doses stored in a micro-cache?",
+      "choices": {
+        "A": "6 blisters (12 doses)",
+        "B": "4 blisters (8 doses)",
+        "C": "8 blisters (16 doses)",
+        "D": "2 blisters (4 doses)"
+      },
+      "correct_answer": "B",
+      "explanation": "The standard cache contents are specified in the PAMC Logistics Form MC-04.",
+      "source_quote": "Standard cache contents (PAMC Logistics Form MC-04): Calexin-7 dose 4 blisters (8 doses)",
+      "user_answer": "D",
+      "is_correct": false
+    },
+    {
+      "id": 48,
+      "section_id": 8,
+      "source_chunk_ids": [
+        684,
+        681,
+        687,
+        683,
+        682,
+        658
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the standard quantity of Calexin-7 doses maintained in the micro-caches?",
+      "choices": {
+        "A": "6 blisters",
+        "B": "8 blisters",
+        "C": "4 blisters",
+        "D": "10 blisters"
+      },
+      "correct_answer": "C",
+      "explanation": "The standard cache contents, as per the PAMC Logistics Form MC-04, include 4 blisters of Calexin-7 dose.",
+      "source_quote": "Standard cache contents (PAMC Logistics Form MC-04): Item Quantity Tungsten throwing batons (replacement) 2 Calexin-7 dose 4 blisters (8 doses)",
+      "user_answer": "C",
+      "is_correct": true
+    },
+    {
+      "id": 49,
+      "section_id": 8,
+      "source_chunk_ids": [
+        681,
+        686,
+        684,
+        682,
+        683,
+        658
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the purpose of the Cerro Castillo exclusion ring?",
+      "choices": {
+        "A": "Strategic; ongoing classified PAMC investigation since 2023",
+        "B": "Psychological; CBMP recommendation since 2020",
+        "C": "Jurisdictional; pending bilateral agreement",
+        "D": "Operational; ongoing PAMC operation"
+      },
+      "correct_answer": "B",
+      "explanation": "The Cerro Castillo exclusion ring is a restricted zone due to a psychological reason, as per the CBMP recommendation since 2020.",
+      "source_quote": "Psychological; CBMP recommendation since 2020",
+      "user_answer": "B",
+      "is_correct": true
+    },
+    {
+      "id": 50,
+      "section_id": 8,
+      "source_chunk_ids": [
+        681,
+        686,
+        684,
+        682,
+        683,
+        658
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the purpose of the Cerro Castillo exclusion ring?",
+      "choices": {
+        "A": "Psychological; to protect the asset from external threats",
+        "B": "Psychological; CBMP recommendation since 2020",
+        "C": "Strategic; ongoing classified PAMC investigation since 2023",
+        "D": "Jurisdictional; pending bilateral agreement"
+      },
+      "correct_answer": "B",
+      "explanation": "The Cerro Castillo exclusion ring is a restricted zone due to psychological reasons, as recommended by CBMP since 2020. This is evident from the context where it is mentioned that the asset has not entered the area since the 2018 incident.",
+      "source_quote": "Psychological; CBMP recommendation since 2020",
+      "user_answer": "B",
+      "is_correct": true
+    },
+    {
+      "id": 51,
+      "section_id": 8,
+      "source_chunk_ids": [
+        681,
+        687,
+        683,
+        688,
+        686,
+        658
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the purpose of the Cerro Castillo exclusion ring within the asset's operational territory?",
+      "choices": {
+        "A": "Strategic; ongoing classified PAMC investigation",
+        "B": "Psychological; CBMP recommendation since 2020",
+        "C": "Jurisdictional; pending bilateral agreement",
+        "D": "Operational; required for satellite uplink"
+      },
+      "correct_answer": "B",
+      "explanation": "The Cerro Castillo exclusion ring is a formally restricted zone within the asset's operational territory due to a psychological reason, as recommended by the CBMP since 2020.",
+      "source_quote": "Cerro Castillo exclusion ring (1.6 km radius around the 2018 trigger site) Psychological; CBMP recommendation since 2020",
+      "user_answer": "B",
+      "is_correct": true
+    }
+  ]
+}

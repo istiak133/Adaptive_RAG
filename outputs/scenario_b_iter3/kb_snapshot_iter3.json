@@ -1,0 +1,980 @@
+{
+  "snapshot_after_session": 19,
+  "exported_at": "2026-05-27T11:02:09.145758+00:00",
+  "total_sessions_in_kb": 6,
+  "recent_sessions": [
+    {
+      "session_id": 19,
+      "sections_studied": [
+        8
+      ],
+      "is_cold_start": false,
+      "difficulty_level": "medium",
+      "score_pct": 20.0,
+      "correct_count": 1,
+      "wrong_count": 4,
+      "total_questions": 5,
+      "started_at": "2026-05-26T14:40:03.451268+00:00",
+      "completed_at": "2026-05-26T14:41:35.467120+00:00",
+      "adaptive_context": {
+        "summary": "MASTERED — avoid heavy focus, vary angle if asked at all:\n  • Calexin-7 — weight 0.10, correct 6× consecutive\n\nRECENT QUESTION THEMES (do NOT repeat these verbatim):\n  - Which of the following is a function of the Oficina Tarija, a secondary base located in La Paz?\n  - How many packets of Bofedal-3 electrolyte concentrate are stored in each standard cache?\n  - What is the standard quantity of Calexin-7 doses stored in a micro-cache?\n  - How many Calexin-7 doses are stored in a standard micro-cache?\n  - What is the standard quantity of Calexin-7 doses stored in a micro-cache?\n  - What is the purpose of the Cerro Castillo exclusion ring within the asset's operational territory?\n  - What is the purpose of the Cerro Castillo exclusion ring?\n  - What is the purpose of the Cerro Castillo exclusion ring?",
+        "allocation": {
+          "8": {
+            "mode": "adaptive",
+            "seeds": [
+              "Bofedal-3",
+              "Cell Cóndor",
+              "Cerro Castillo",
+              "Cuartel Valparaíso",
+              "MIRADOR"
+            ],
+            "weights": [
+              {
+                "topic": "Bofedal-3",
+                "weight": 0.3,
+                "questions": 1
+              },
+              {
+                "topic": "Cell Cóndor",
+                "weight": 0.3,
+                "questions": 1
+              },
+              {
+                "topic": "Cerro Castillo",
+                "weight": 0.3,
+                "questions": 1
+              },
+              {
+                "topic": "Cuartel Valparaíso",
+                "weight": 0.3,
+                "questions": 1
+              },
+              {
+                "topic": "MIRADOR",
+                "weight": 0.3,
+                "questions": 1
+              }
+            ]
+          }
+        },
+        "regressions": []
+      },
+      "token_usage": {
+        "total": 22082,
+        "content": 5432,
+        "history": 1000,
+        "total_input": 9582,
+        "instructions": 2180,
+        "system_prompt": 970,
+        "output_reserve": 12500
+      },
+      "questions": [
+        {
+          "id": 67,
+          "section_id": 8,
+          "question_text": "How many packets of Bofedal-3 electrolyte concentrate are stored in each standard cache?",
+          "choice_a": "2 packets",
+          "choice_b": "4 packets",
+          "choice_c": "6 packets",
+          "choice_d": "8 packets",
+          "correct_answer": "B",
+          "user_answer": "A",
+          "is_correct": false,
+          "explanation": "The standard cache contents (PAMC Logistics Form MC-04) specify that each cache contains 4 packets of Bofedal-3 electrolyte concentrate.",
+          "source_quote": "Standard cache contents (PAMC Logistics Form MC-04): Bofedal-3 electrolyte concentrate 4 packets"
+        },
+        {
+          "id": 68,
+          "section_id": 8,
+          "question_text": "Which of the following is a function of the Cell Cóndor, a primary operator for Argentina?",
+          "choice_a": "Providing logistical support for operations",
+          "choice_b": "Coordinating entry and exit points for asset operations",
+          "choice_c": "Conducting surveillance in the Andean cordillera",
+          "choice_d": "Maintaining a network of micro-caches",
+          "correct_answer": "B",
+          "user_answer": "A",
+          "is_correct": false,
+          "explanation": "The Cell Cóndor is responsible for coordinating entry for asset operations, as stated in Section 8.8 Territorial Agreements with Allied Operators.",
+          "source_quote": "Cell Cóndor (Mendoza-based) — primary operator for Argentine Mendoza and Neuquén; SLATEFALL coordinates entry"
+        },
+        {
+          "id": 69,
+          "section_id": 8,
+          "question_text": "What is the reason for the Cerro Castillo exclusion ring?",
+          "choice_a": "Strategic; ongoing classified PAMC investigation",
+          "choice_b": "Psychological; CBMP recommendation since 2020",
+          "choice_c": "Jurisdictional; pending bilateral agreement",
+          "choice_d": "Limited access, prior coordination required",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "The Cerro Castillo exclusion ring is a restricted zone due to its psychological nature, as it is the site of a 2018 incident.",
+          "source_quote": "Psychological; CBMP recommendation since 2020"
+        },
+        {
+          "id": 70,
+          "section_id": 8,
+          "question_text": "What is the purpose of Cuartel Valparaíso's subsurface levels?",
+          "choice_a": "Storage and office space",
+          "choice_b": "Storage and CBMP regional micro-lab",
+          "choice_c": "Dormitory and recreational facilities",
+          "choice_d": "Vehicle parking and equipment storage",
+          "correct_answer": "B",
+          "user_answer": "D",
+          "is_correct": false,
+          "explanation": "The facility has 2 subsurface levels, one for storage and the other for the CBMP regional micro-lab.",
+          "source_quote": "The facility is hardened against EMP exposure and EM eavesdropping. Cuartel Valparaíso houses Cell Halcón's principal quarters, the asset's personal residence wing (44 m² apartment, Block C), and the regional CBMP medical office."
+        },
+        {
+          "id": 71,
+          "section_id": 8,
+          "question_text": "Which of the following is associated with the Operative MIRADOR, a senior PAMC operative?",
+          "choice_a": "A formal coordination agreement with Cell Cóndor",
+          "choice_b": "A bilateral cooperation framework with the Bolivian SOE",
+          "choice_c": "A direct operational relationship with the Peruvian DAM",
+          "choice_d": "The asset's former trainer",
+          "correct_answer": "D",
+          "user_answer": "C",
+          "is_correct": false,
+          "explanation": "The Operative MIRADOR is described as the asset's former trainer, indicating a close professional relationship.",
+          "source_quote": "Operative MIRADOR (Atacama) — senior PAMC operative, the asset's former trainer"
+        }
+      ]
+    },
+    {
+      "session_id": 18,
+      "sections_studied": [
+        6,
+        8,
+        9
+      ],
+      "is_cold_start": false,
+      "difficulty_level": "medium",
+      "score_pct": 86.6666666666667,
+      "correct_count": 13,
+      "wrong_count": 2,
+      "total_questions": 15,
+      "started_at": "2026-05-26T14:33:21.427471+00:00",
+      "completed_at": "2026-05-26T14:39:50.704642+00:00",
+      "adaptive_context": {
+        "summary": "WEAK TOPICS — generate questions emphasising these:\n  • Calexin-7 (§8) — section weight 1.50, global 1.50, wrong 1×\n\nRECENT QUESTION THEMES (do NOT repeat these verbatim):\n  - What is the purpose of the Cerro Castillo exclusion ring within the asset's operational territory?\n  - What is the purpose of the Cerro Castillo exclusion ring?\n  - What is the purpose of the Cerro Castillo exclusion ring?\n  - What is the standard quantity of Calexin-7 doses maintained in the micro-caches?\n  - What is the standard quantity of Calexin-7 doses stored in a micro-cache?",
+        "allocation": {
+          "6": {
+            "mode": "adaptive",
+            "seeds": [
+              "SLATEFALL",
+              "SLATEFALL",
+              "CEM",
+              "Cell Halcón",
+              "Pajarera"
+            ],
+            "weights": [
+              {
+                "topic": "SLATEFALL",
+                "weight": 1.0,
+                "questions": 2
+              },
+              {
+                "topic": "CEM",
+                "weight": 0.6,
+                "questions": 1
+              },
+              {
+                "topic": "Cell Halcón",
+                "weight": 0.6,
+                "questions": 1
+              },
+              {
+                "topic": "Pajarera",
+                "weight": 0.6,
+                "questions": 1
+              },
+              {
+                "topic": "Calexin-7",
+                "weight": 0.45,
+                "questions": 0
+              }
+            ]
+          },
+          "8": {
+            "mode": "adaptive",
+            "seeds": [
+              "Calexin-7",
+              "Calexin-7",
+              "Calexin-7",
+              "Bofedal-3",
+              "Cell Cóndor"
+            ],
+            "weights": [
+              {
+                "topic": "Calexin-7",
+                "weight": 2.25,
+                "questions": 3
+              },
+              {
+                "topic": "Bofedal-3",
+                "weight": 0.3,
+                "questions": 1
+              },
+              {
+                "topic": "Cell Cóndor",
+                "weight": 0.3,
+                "questions": 1
+              },
+              {
+                "topic": "Cell Halcón",
+                "weight": 0.3,
+                "questions": 0
+              },
+              {
+                "topic": "Cerro Castillo",
+                "weight": 0.3,
+                "questions": 0
+              }
+            ]
+          },
+          "9": {
+            "mode": "adaptive",
+            "seeds": [
+              "Iron Tributary",
+              "Iron Tributary",
+              "Drift Read",
+              "SLATEFALL",
+              "Calexin-7"
+            ],
+            "weights": [
+              {
+                "topic": "Iron Tributary",
+                "weight": 1.0,
+                "questions": 2
+              },
+              {
+                "topic": "Drift Read",
+                "weight": 0.6,
+                "questions": 1
+              },
+              {
+                "topic": "SLATEFALL",
+                "weight": 0.6,
+                "questions": 1
+              },
+              {
+                "topic": "Calexin-7",
+                "weight": 0.45,
+                "questions": 1
+              },
+              {
+                "topic": "Cabrestante",
+                "weight": 0.3,
+                "questions": 0
+              }
+            ]
+          }
+        },
+        "regressions": []
+      },
+      "token_usage": {
+        "total": 68272,
+        "content": 19192,
+        "history": 2130,
+        "total_input": 30772,
+        "instructions": 6540,
+        "system_prompt": 2910,
+        "output_reserve": 37500
+      },
+      "questions": [
+        {
+          "id": 59,
+          "section_id": 8,
+          "question_text": "What is the standard quantity of Calexin-7 doses stored in a micro-cache?",
+          "choice_a": "2 blisters (4 doses)",
+          "choice_b": "4 blisters (8 doses)",
+          "choice_c": "6 blisters (12 doses)",
+          "choice_d": "8 blisters (16 doses)",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "The asset maintains a network of 19 micro-caches, with a standard cache contents list specifying 4 blisters (8 doses) of Calexin-7.",
+          "source_quote": "Standard cache contents (PAMC Logistics Form MC-04): Calexin-7 dose 4 blisters (8 doses)"
+        },
+        {
+          "id": 52,
+          "section_id": 6,
+          "question_text": "What is the primary threat profile of Inspector General Magnus Sletten against the asset SLATEFALL?",
+          "choice_a": "Physical harm",
+          "choice_b": "Operational restriction",
+          "choice_c": "Metahuman capability",
+          "choice_d": "Bureaucratic action",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "Inspector General Sletten's threat profile is operational restriction, not physical harm, due to his bureaucratic position.",
+          "source_quote": "The threat is operational restriction, not physical harm."
+        },
+        {
+          "id": 53,
+          "section_id": 6,
+          "question_text": "What is the administrative assignment of SLATEFALL within the Pan-American Metahuman Cooperative?",
+          "choice_a": "Behavioral Health Directorate",
+          "choice_b": "Operations Directorate",
+          "choice_c": "Logistics Directorate",
+          "choice_d": "Cooperative Bureau of Metahuman Physics (CBMP)",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "SLATEFALL is administratively assigned to the Andean Operations Bureau under the Operations Directorate.",
+          "source_quote": "The Cooperative operates four directorates: Operations, Behavioral Health, Logistics, and the Cooperative Bureau of Metahuman Physics (CBMP). SLATEFALL is administratively assigned to the Andean Operations Bureau under the Operations Directorate."
+        },
+        {
+          "id": 54,
+          "section_id": 6,
+          "question_text": "What is the role of Dr. Léon Marrón-Saavedra in relation to the asset?",
+          "choice_a": "He is the asset's mental health practitioner.",
+          "choice_b": "He is the asset's direct chain-of-command superior.",
+          "choice_c": "He conducts annual scientific re-evaluations of the asset's power.",
+          "choice_d": "He is a former CEM cadre.",
+          "correct_answer": "C",
+          "user_answer": "C",
+          "is_correct": true,
+          "explanation": "Dr. Léon Marrón-Saavedra conducts annual scientific re-evaluations of the asset's power, as stated in §6.4 Senior PAMC Allies.",
+          "source_quote": "Senior scientist, CBMP; Co-author of the Calvache–Marrón Equations; Conducts annual scientific re-evaluations of the asset's power (§2.19)"
+        },
+        {
+          "id": 55,
+          "section_id": 6,
+          "question_text": "What is the primary specialty of Sgt. Mateo Quispe-Linares?",
+          "choice_a": "High-altitude tracking, alpine reconnaissance",
+          "choice_b": "Trauma surgery, altitude medicine, metahuman physiology",
+          "choice_c": "Neural-telemetry units engineering",
+          "choice_d": "CBMP physicist",
+          "correct_answer": "A",
+          "user_answer": "A",
+          "is_correct": true,
+          "explanation": "Sgt. Mateo Quispe-Linares has prior service in the Bolivian Special Forces, Regimiento Bolívar, 14 years, specializing in high-altitude tracking and alpine reconnaissance.",
+          "source_quote": "Specialty: high-altitude tracking, alpine reconnaissance"
+        },
+        {
+          "id": 56,
+          "section_id": 6,
+          "question_text": "What is the role of Hermana Asunta Mendieta in the PAMC network?",
+          "choice_a": "She is a civilian intelligence asset based in La Paz.",
+          "choice_b": "She is a non-combatant safehouse keeper, Cuzco.",
+          "choice_c": "She is a pediatric trauma surgeon, civilian-casualty triage.",
+          "choice_d": "She is a lawyer, civilian-affairs counsel.",
+          "correct_answer": "B",
+          "user_answer": "D",
+          "is_correct": false,
+          "explanation": "Hermana Asunta Mendieta is a non-combatant safehouse keeper, providing medical and shelter services during transit operations.",
+          "source_quote": "Non-combatant safehouse keeper, Cuzco (PAMC Safehouse C-3, §8.4)"
+        },
+        {
+          "id": 57,
+          "section_id": 8,
+          "question_text": "What is the standard quantity of Calexin-7 doses stored in a micro-cache?",
+          "choice_a": "2 blisters (4 doses)",
+          "choice_b": "4 blisters (8 doses)",
+          "choice_c": "6 blisters (12 doses)",
+          "choice_d": "8 blisters (16 doses)",
+          "correct_answer": "B",
+          "user_answer": "D",
+          "is_correct": false,
+          "explanation": "The standard cache contents for a micro-cache include 4 blisters (8 doses) of Calexin-7, as per the PAMC Logistics Form MC-04.",
+          "source_quote": "Standard cache contents (PAMC Logistics Form MC-04): Item Quantity Tungsten throwing batons (replacement) 2 Calexin-7 dose 4 blisters (8 doses) Bofedal-3 electrolyte concentrate 4 packets"
+        },
+        {
+          "id": 58,
+          "section_id": 8,
+          "question_text": "How many Calexin-7 doses are stored in a standard micro-cache?",
+          "choice_a": "4",
+          "choice_b": "8",
+          "choice_c": "12",
+          "choice_d": "16",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "The standard cache contents, as described in PAMC Logistics Form MC-04, include 4 blisters of Calexin-7, which equates to 8 doses.",
+          "source_quote": "Standard cache contents (PAMC Logistics Form MC-04):\nItem\nQuantity\nTungsten throwing batons (replacement)\n2\nCalexin-7 dose\n4 blisters (8 doses)"
+        },
+        {
+          "id": 60,
+          "section_id": 8,
+          "question_text": "How many packets of Bofedal-3 electrolyte concentrate are stored in each standard cache?",
+          "choice_a": "2 packets",
+          "choice_b": "4 packets",
+          "choice_c": "6 packets",
+          "choice_d": "8 packets",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "According to the PAMC Logistics Form MC-04, standard cache contents include 4 packets of Bofedal-3 electrolyte concentrate.",
+          "source_quote": "Standard cache contents (PAMC Logistics Form MC-04): Item Quantity Tungsten throwing batons (replacement) 2 Calexin-7 dose 4 blisters (8 doses) Bofedal-3 electrolyte concentrate 4 packets"
+        },
+        {
+          "id": 61,
+          "section_id": 8,
+          "question_text": "Which of the following is a function of the Oficina Tarija, a secondary base located in La Paz?",
+          "choice_a": "Serves as a PAMC Headquarters",
+          "choice_b": "Field office for Bolivian altiplano operations",
+          "choice_c": "Logistics-only annex for southern operations",
+          "choice_d": "Asset's primary operational base",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "The Oficina Tarija serves as a field office for Bolivian altiplano operations, as stated in §8.2 Secondary Bases.",
+          "source_quote": "Field office, Bolivian altiplano operations"
+        },
+        {
+          "id": 62,
+          "section_id": 9,
+          "question_text": "What is the primary purpose of the asset's micro-cache network?",
+          "choice_a": "To store and maintain a variety of supplies and equipment for the asset's operations.",
+          "choice_b": "To serve as a backup power source for the asset's systems.",
+          "choice_c": "To provide a secure location for the asset to store sensitive information.",
+          "choice_d": "To facilitate the asset's ability to engage in combat operations.",
+          "correct_answer": "A",
+          "user_answer": "A",
+          "is_correct": true,
+          "explanation": "The micro-cache network is described as a network of 19 micro-caches distributed across the Andean cordillera, containing standard cache contents such as Tungsten throwing batons, Calexin-7 doses, and Bofedal-3 electrolyte concentrate. This suggests that the primary purpose of the network is to store and maintain supplies and equipment for the asset's operations.",
+          "source_quote": "The asset maintains a network of 19 micro-caches distributed across the Andean cordillera:"
+        },
+        {
+          "id": 63,
+          "section_id": 9,
+          "question_text": "What is the approximate number of Calexin-7 doses stored in a micro-cache?",
+          "choice_a": "6 blisters (12 doses)",
+          "choice_b": "4 blisters (8 doses)",
+          "choice_c": "8 blisters (16 doses)",
+          "choice_d": "10 blisters (20 doses)",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "According to the PAMC Logistics Form MC-04, the standard cache contents include 4 blisters (8 doses) of Calexin-7 for each micro-cache.",
+          "source_quote": "Standard cache contents (PAMC Logistics Form MC-04): Item Quantity Tungsten throwing batons (replacement) 2 Calexin-7 dose 4 blisters (8 doses)"
+        },
+        {
+          "id": 64,
+          "section_id": 9,
+          "question_text": "What was the primary purpose of the asset's deployment during Case 2021-0091?",
+          "choice_a": "To test the asset's Inertial Suspension ability",
+          "choice_b": "To deploy the newly emerged Drift Read ability for the first time",
+          "choice_c": "To conduct a routine cache audit",
+          "choice_d": "To engage in a joint operation with EUMR operatives",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "The asset detected and interdicted three incoming small-arms rounds during a 36-hour engagement window, formally adding Drift Read to the asset's capability registry on 30 September 2021.",
+          "source_quote": "The asset detected and interdicted three incoming small-arms rounds across a 36-hour engagement window."
+        },
+        {
+          "id": 65,
+          "section_id": 9,
+          "question_text": "What was the outcome of the second Echo Lock event during the engagement in Salta Province, Argentina?",
+          "choice_a": "Successful",
+          "choice_b": "Pyrrhic",
+          "choice_c": "Catastrophic",
+          "choice_d": "Partial",
+          "correct_answer": "C",
+          "user_answer": "C",
+          "is_correct": true,
+          "explanation": "The Salta engagement against Quebrantadero / Wilma Sandoval-Iqui produced significant civilian casualties and is classified Catastrophic.",
+          "source_quote": "The Salta engagement against Quebrantadero / Wilma Sandoval-Iqui produced significant civilian casualties (11 confirmed) and is classified Catastrophic."
+        },
+        {
+          "id": 66,
+          "section_id": 9,
+          "question_text": "What is the standard quantity of Calexin-7 doses stored in the micro-caches?",
+          "choice_a": "2 doses",
+          "choice_b": "4 blisters (8 doses)",
+          "choice_c": "16 doses",
+          "choice_d": "32 doses",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "According to §8.4, the standard cache contents include 4 blisters (8 doses) of Calexin-7.",
+          "source_quote": "Standard cache contents (PAMC Logistics Form MC-04):\nItem\nQuantity\nTungsten throwing batons (replacement)\n2\nCalexin-7 dose\n4 blisters (8 doses)"
+        }
+      ]
+    },
+    {
+      "session_id": 17,
+      "sections_studied": [
+        5,
+        8
+      ],
+      "is_cold_start": true,
+      "difficulty_level": "medium",
+      "score_pct": 80.0,
+      "correct_count": 8,
+      "wrong_count": 2,
+      "total_questions": 10,
+      "started_at": "2026-05-26T14:27:08.658058+00:00",
+      "completed_at": "2026-05-26T14:33:05.981760+00:00",
+      "adaptive_context": {
+        "allocation": {
+          "5": {
+            "mode": "adaptive",
+            "seeds": [
+              "Calexin-7",
+              "Cell Halcón",
+              "Hold",
+              "PAMC",
+              "Tail Momentum"
+            ],
+            "weights": [
+              {
+                "topic": "Calexin-7",
+                "weight": 1.0,
+                "questions": 1
+              },
+              {
+                "topic": "Cell Halcón",
+                "weight": 1.0,
+                "questions": 1
+              },
+              {
+                "topic": "Hold",
+                "weight": 1.0,
+                "questions": 1
+              },
+              {
+                "topic": "PAMC",
+                "weight": 1.0,
+                "questions": 1
+              },
+              {
+                "topic": "Tail Momentum",
+                "weight": 1.0,
+                "questions": 1
+              }
+            ]
+          },
+          "8": {
+            "mode": "adaptive",
+            "seeds": [
+              "Calexin-7",
+              "Calexin-7",
+              "CBMP",
+              "CBMP",
+              "PAMC"
+            ],
+            "weights": [
+              {
+                "topic": "Calexin-7",
+                "weight": 1.0,
+                "questions": 2
+              },
+              {
+                "topic": "CBMP",
+                "weight": 1.0,
+                "questions": 2
+              },
+              {
+                "topic": "PAMC",
+                "weight": 1.0,
+                "questions": 1
+              },
+              {
+                "topic": "Bofedal-3",
+                "weight": 0.3,
+                "questions": 0
+              },
+              {
+                "topic": "Cell Cóndor",
+                "weight": 0.3,
+                "questions": 0
+              }
+            ]
+          }
+        },
+        "regressions": []
+      },
+      "token_usage": {
+        "total": 57850,
+        "content": 17160,
+        "history": 0,
+        "total_input": 25350,
+        "instructions": 5668,
+        "system_prompt": 2522,
+        "output_reserve": 32500
+      },
+      "questions": [
+        {
+          "id": 42,
+          "section_id": 5,
+          "question_text": "What is the minimum required authority for engaging Tier 4 threats?",
+          "choice_a": "Field operative, solo",
+          "choice_b": "Lead officer, cell required",
+          "choice_c": "Lead officer + auxiliary on standby",
+          "choice_d": "Director-General authorization",
+          "correct_answer": "C",
+          "user_answer": "C",
+          "is_correct": true,
+          "explanation": "The text states that for Tier 4 threats, a lead officer is required, with an auxiliary on standby.",
+          "source_quote": "Tier 4 500 kJ – 50 MJ 101–5,000 civilians Lead officer + auxiliary on standby"
+        },
+        {
+          "id": 43,
+          "section_id": 5,
+          "question_text": "What is the purpose of the 'Drop-Tune' manoeuvre?",
+          "choice_a": "To increase the asset's speed during engagement",
+          "choice_b": "To allow the asset to suspend an object within ~0.3 seconds prior to trigger",
+          "choice_c": "To enable the asset to engage targets without verifying the contact-exclusion radius",
+          "choice_d": "To compress the reconnaissance schedule for solo deployments",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "The 'Drop-Tune' manoeuvre is a standard activation pattern that exploits the contact-exclusion rule, allowing the asset to release an object within ~0.3 seconds prior to trigger.",
+          "source_quote": "She can, however, suspend an object that she releases within ~0.3 seconds prior to trigger."
+        },
+        {
+          "id": 44,
+          "section_id": 5,
+          "question_text": "What is the maximum number of objects that can be simultaneously held in a Suspended Field using the tertiary Hold ability?",
+          "choice_a": "3",
+          "choice_b": "4",
+          "choice_c": "5",
+          "choice_d": "6",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "The maximum number of objects that can be simultaneously held in a Suspended Field is determined by the available activations within a 60-second window minus a 1-second suspension reserve.",
+          "source_quote": "Maximum simultaneously held objects: 4 (matching available activations within a 60-s window minus a 1-suspension reserve)"
+        },
+        {
+          "id": 45,
+          "section_id": 5,
+          "question_text": "What is the primary authority required for a Tier 3 threat engagement?",
+          "choice_a": "Field operative, solo",
+          "choice_b": "Lead officer, cell required",
+          "choice_c": "Director-General authorization",
+          "choice_d": "Cell Cóndor",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "According to the Threat Tier definitions, a Tier 3 threat requires a cell to be present, with the lead officer having full authority.",
+          "source_quote": "Tier 3 Cell required, lead authority"
+        },
+        {
+          "id": 46,
+          "section_id": 5,
+          "question_text": "What is the primary benefit of Tail Momentum in the Tail-Strike technique?",
+          "choice_a": "It allows for a more precise targeting window.",
+          "choice_b": "It enables the delivery of compounded impacts that cannot be achieved by linear projectile motion alone.",
+          "choice_c": "It reduces the metabolic cost of suspension.",
+          "choice_d": "It increases the average target mass per activation.",
+          "correct_answer": "B",
+          "user_answer": "D",
+          "is_correct": false,
+          "explanation": "Tail Momentum is the payoff of the Doctrine of Sequential Suspension, allowing for the delivery of compounded impacts that cannot be achieved by linear projectile motion alone. This property is termed Tail Momentum and underpins the Tail-Strike combat technique.",
+          "source_quote": "Tail momentum is the payoff. Plan terminal vectors before activating."
+        },
+        {
+          "id": 47,
+          "section_id": 8,
+          "question_text": "What is the standard quantity of Calexin-7 doses stored in a micro-cache?",
+          "choice_a": "6 blisters (12 doses)",
+          "choice_b": "4 blisters (8 doses)",
+          "choice_c": "8 blisters (16 doses)",
+          "choice_d": "2 blisters (4 doses)",
+          "correct_answer": "B",
+          "user_answer": "D",
+          "is_correct": false,
+          "explanation": "The standard cache contents are specified in the PAMC Logistics Form MC-04.",
+          "source_quote": "Standard cache contents (PAMC Logistics Form MC-04): Calexin-7 dose 4 blisters (8 doses)"
+        },
+        {
+          "id": 48,
+          "section_id": 8,
+          "question_text": "What is the standard quantity of Calexin-7 doses maintained in the micro-caches?",
+          "choice_a": "6 blisters",
+          "choice_b": "8 blisters",
+          "choice_c": "4 blisters",
+          "choice_d": "10 blisters",
+          "correct_answer": "C",
+          "user_answer": "C",
+          "is_correct": true,
+          "explanation": "The standard cache contents, as per the PAMC Logistics Form MC-04, include 4 blisters of Calexin-7 dose.",
+          "source_quote": "Standard cache contents (PAMC Logistics Form MC-04): Item Quantity Tungsten throwing batons (replacement) 2 Calexin-7 dose 4 blisters (8 doses)"
+        },
+        {
+          "id": 49,
+          "section_id": 8,
+          "question_text": "What is the purpose of the Cerro Castillo exclusion ring?",
+          "choice_a": "Strategic; ongoing classified PAMC investigation since 2023",
+          "choice_b": "Psychological; CBMP recommendation since 2020",
+          "choice_c": "Jurisdictional; pending bilateral agreement",
+          "choice_d": "Operational; ongoing PAMC operation",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "The Cerro Castillo exclusion ring is a restricted zone due to a psychological reason, as per the CBMP recommendation since 2020.",
+          "source_quote": "Psychological; CBMP recommendation since 2020"
+        },
+        {
+          "id": 50,
+          "section_id": 8,
+          "question_text": "What is the purpose of the Cerro Castillo exclusion ring?",
+          "choice_a": "Psychological; to protect the asset from external threats",
+          "choice_b": "Psychological; CBMP recommendation since 2020",
+          "choice_c": "Strategic; ongoing classified PAMC investigation since 2023",
+          "choice_d": "Jurisdictional; pending bilateral agreement",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "The Cerro Castillo exclusion ring is a restricted zone due to psychological reasons, as recommended by CBMP since 2020. This is evident from the context where it is mentioned that the asset has not entered the area since the 2018 incident.",
+          "source_quote": "Psychological; CBMP recommendation since 2020"
+        },
+        {
+          "id": 51,
+          "section_id": 8,
+          "question_text": "What is the purpose of the Cerro Castillo exclusion ring within the asset's operational territory?",
+          "choice_a": "Strategic; ongoing classified PAMC investigation",
+          "choice_b": "Psychological; CBMP recommendation since 2020",
+          "choice_c": "Jurisdictional; pending bilateral agreement",
+          "choice_d": "Operational; required for satellite uplink",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "The Cerro Castillo exclusion ring is a formally restricted zone within the asset's operational territory due to a psychological reason, as recommended by the CBMP since 2020.",
+          "source_quote": "Cerro Castillo exclusion ring (1.6 km radius around the 2018 trigger site) Psychological; CBMP recommendation since 2020"
+        }
+      ]
+    },
+    {
+      "session_id": 16,
+      "sections_studied": [
+        2
+      ],
+      "is_cold_start": false,
+      "difficulty_level": "easy",
+      "score_pct": 100.0,
+      "correct_count": 3,
+      "wrong_count": 0,
+      "total_questions": 3,
+      "started_at": "2026-05-26T14:18:55.031441+00:00",
+      "completed_at": "2026-05-26T14:20:44.025912+00:00",
+      "adaptive_context": {
+        "summary": "WEAK TOPICS — generate questions emphasising these:\n  • Inertial Suspension (§2) — section weight 1.95, global 1.95, wrong 1×\n  • Echo Lock (§2) — section weight 1.95, global 1.95, wrong 1×\n  • CBMP (§2) — section weight 1.95, global 1.95, wrong 1×\n\nRECENT QUESTION THEMES (do NOT repeat these verbatim):\n  - What is the primary consequence of Inertial Suspension on the suspended object's gravitational mass?\n  - What is the primary symptom of Echo Lock failure mode?\n  - What is the primary rationale behind the Director-General-only authorization requirement for Mar Inverso engagement?",
+        "allocation": {
+          "2": {
+            "mode": "adaptive",
+            "seeds": [
+              "CBMP",
+              "Echo Lock",
+              "Inertial Suspension"
+            ],
+            "weights": [
+              {
+                "topic": "CBMP",
+                "weight": 3.8,
+                "questions": 1
+              },
+              {
+                "topic": "Echo Lock",
+                "weight": 3.8,
+                "questions": 1
+              },
+              {
+                "topic": "Inertial Suspension",
+                "weight": 3.8,
+                "questions": 1
+              },
+              {
+                "topic": "Mar Inverso",
+                "weight": 1.0,
+                "questions": 0
+              },
+              {
+                "topic": "PAMC",
+                "weight": 1.0,
+                "questions": 0
+              }
+            ]
+          }
+        },
+        "regressions": []
+      },
+      "token_usage": {
+        "total": 19788,
+        "content": 6628,
+        "history": 640,
+        "total_input": 9788,
+        "instructions": 1744,
+        "system_prompt": 776,
+        "output_reserve": 10000
+      },
+      "questions": [
+        {
+          "id": 39,
+          "section_id": 2,
+          "question_text": "What type of signatures are detectable approximately 0.4 seconds before the asset initiates targeting?",
+          "choice_a": "Power-Onset Pre-Activation Signatures",
+          "choice_b": "Operational Tell-Tale Indicators",
+          "choice_c": "Inertial Suspension",
+          "choice_d": "Echo Lock",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "CBMP has documented three measurable pre-activation physiological signatures detectable approximately 0.4 seconds before the asset initiates targeting.",
+          "source_quote": "CBMP has documented three measurable pre-activation physiological signatures detectable approximately 0.4 seconds before the asset initiates targeting:"
+        },
+        {
+          "id": 40,
+          "section_id": 2,
+          "question_text": "What is the duration of the targeting freeze observed in Echo Lock failure mode?",
+          "choice_a": "1 second",
+          "choice_b": "4 seconds",
+          "choice_c": "10 seconds",
+          "choice_d": "20 seconds",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "Echo Lock is a neurological seizure-equivalent observed twice in operational record: 19 November 2020 (training environment, Lima) and 14 August 2023 (combat environment, Salta). Symptoms include a 4-second targeting freeze in which the asset cannot acquire new targets, cannot voluntarily release a current suspension, and experiences pronounced cervical spasm.",
+          "source_quote": "a 4-second targeting freeze in which the asset cannot acquire new targets, cannot voluntarily release a current suspension, and experiences pronounced cervical spasm."
+        },
+        {
+          "id": 41,
+          "section_id": 2,
+          "question_text": "What is the primary effect of Inertial Suspension on a suspended object's gravitational mass?",
+          "choice_a": "It has no effect on the object's gravitational mass.",
+          "choice_b": "It reduces the object's gravitational mass.",
+          "choice_c": "It retains the object's gravitational mass.",
+          "choice_d": "It increases the object's gravitational mass.",
+          "correct_answer": "C",
+          "user_answer": "C",
+          "is_correct": true,
+          "explanation": "According to the operative theory of mechanism, the Calvache–Marrón Equations posit a transient local discontinuity in the conserved-momentum tensor, sustained by metabolic substrate drawn from the asset's central nervous system. This discontinuity is bounded in mass, duration, range, and recurrence, all of which have been experimentally calibrated. When the effect is active, the suspended object retains its gravitational mass.",
+          "source_quote": "The operative theory of mechanism — the Calvache–Marrón Equations — was developed jointly by the asset and CBMP physicist Dr. Léon Marrón-Saavedra and published in restricted form on 11 May 2022."
+        }
+      ]
+    },
+    {
+      "session_id": 15,
+      "sections_studied": [
+        2
+      ],
+      "is_cold_start": true,
+      "difficulty_level": "medium",
+      "score_pct": 0.0,
+      "correct_count": 0,
+      "wrong_count": 3,
+      "total_questions": 3,
+      "started_at": "2026-05-26T14:17:52.475137+00:00",
+      "completed_at": "2026-05-26T14:18:50.865257+00:00",
+      "adaptive_context": {
+        "allocation": {
+          "2": {
+            "mode": "adaptive",
+            "seeds": [
+              "CBMP",
+              "Echo Lock",
+              "Inertial Suspension"
+            ],
+            "weights": [
+              {
+                "topic": "CBMP",
+                "weight": 1.0,
+                "questions": 1
+              },
+              {
+                "topic": "Echo Lock",
+                "weight": 1.0,
+                "questions": 1
+              },
+              {
+                "topic": "Inertial Suspension",
+                "weight": 1.0,
+                "questions": 1
+              },
+              {
+                "topic": "Mar Inverso",
+                "weight": 1.0,
+                "questions": 0
+              },
+              {
+                "topic": "PAMC",
+                "weight": 1.0,
+                "questions": 0
+              }
+            ]
+          }
+        },
+        "regressions": []
+      },
+      "token_usage": {
+        "total": 14248,
+        "content": 4858,
+        "history": 0,
+        "total_input": 6748,
+        "instructions": 1308,
+        "system_prompt": 582,
+        "output_reserve": 7500
+      },
+      "questions": [
+        {
+          "id": 36,
+          "section_id": 2,
+          "question_text": "What is the primary rationale behind the Director-General-only authorization requirement for Mar Inverso engagement?",
+          "choice_a": "To prevent unauthorized use of the asset's power",
+          "choice_b": "Due to the high risk of cascade failure in mass transfer scenarios",
+          "choice_c": "Because Mar Inverso's inertial inversion capability is the operational inverse of SLATEFALL's power",
+          "choice_d": "To maintain operational secrecy",
+          "correct_answer": "C",
+          "user_answer": "D",
+          "is_correct": false,
+          "explanation": "The Director-General-only authorization requirement is in place because Mar Inverso's inertial inversion capability is the operational inverse of SLATEFALL's power, making it a significant counter-symmetric threat. The asset is not currently authorized to engage Mar Inverso solo.",
+          "source_quote": "If confirmed, Mar Inverso would represent the only known operational counter-symmetric threat to SLATEFALL's primary power."
+        },
+        {
+          "id": 37,
+          "section_id": 2,
+          "question_text": "What is the primary symptom of Echo Lock failure mode?",
+          "choice_a": "Targeting freeze with pronounced cervical spasm",
+          "choice_b": "Activation failure with neural feedback",
+          "choice_c": "Partial suspension of a fraction of the target",
+          "choice_d": "Full activation without any symptoms",
+          "correct_answer": "A",
+          "user_answer": "D",
+          "is_correct": false,
+          "explanation": "Echo Lock is a neurological seizure-equivalent observed twice in operational record, characterized by a 4-second targeting freeze in which the asset cannot acquire new targets, cannot voluntarily release a current suspension, and experiences pronounced cervical spasm.",
+          "source_quote": "Symptoms: a 4-second targeting freeze in which the asset cannot acquire new targets, cannot voluntarily release a current suspension, and experiences pronounced cervical spasm."
+        },
+        {
+          "id": 38,
+          "section_id": 2,
+          "question_text": "What is the primary consequence of Inertial Suspension on the suspended object's gravitational mass?",
+          "choice_a": "It loses its gravitational mass",
+          "choice_b": "It retains its gravitational mass",
+          "choice_c": "It gains additional gravitational mass",
+          "choice_d": "Its gravitational mass is unaffected",
+          "correct_answer": "B",
+          "user_answer": "D",
+          "is_correct": false,
+          "explanation": "The suspended object retains its gravitational mass, but with no resistance to lateral force (§2.1).",
+          "source_quote": "retains its gravitational mass (small objects still fall in earth gravity, but with no resistance to lateral force)"
+        }
+      ]
+    }
+  ],
+  "adaptive_state": {
+    "top_weak_topics": [
+      {
+        "name": "CBMP",
+        "slug": "cbmp",
+        "weight": 1.95,
+        "times_wrong": 1,
+        "times_correct": 0,
+        "streak": -1
+      },
+      {
+        "name": "SLATEFALL",
+        "slug": "slatefall",
+        "weight": 1.95,
+        "times_wrong": 1,
+        "times_correct": 0,
+        "streak": -1
+      }
+    ],
+    "mastered_topics": []
+  }
+}

@@ -1,0 +1,488 @@
+{
+  "snapshot_after_session": 17,
+  "exported_at": "2026-05-27T11:02:07.698779+00:00",
+  "total_sessions_in_kb": 6,
+  "recent_sessions": [
+    {
+      "session_id": 17,
+      "sections_studied": [
+        5,
+        8
+      ],
+      "is_cold_start": true,
+      "difficulty_level": "medium",
+      "score_pct": 80.0,
+      "correct_count": 8,
+      "wrong_count": 2,
+      "total_questions": 10,
+      "started_at": "2026-05-26T14:27:08.658058+00:00",
+      "completed_at": "2026-05-26T14:33:05.981760+00:00",
+      "adaptive_context": {
+        "allocation": {
+          "5": {
+            "mode": "adaptive",
+            "seeds": [
+              "Calexin-7",
+              "Cell Halcón",
+              "Hold",
+              "PAMC",
+              "Tail Momentum"
+            ],
+            "weights": [
+              {
+                "topic": "Calexin-7",
+                "weight": 1.0,
+                "questions": 1
+              },
+              {
+                "topic": "Cell Halcón",
+                "weight": 1.0,
+                "questions": 1
+              },
+              {
+                "topic": "Hold",
+                "weight": 1.0,
+                "questions": 1
+              },
+              {
+                "topic": "PAMC",
+                "weight": 1.0,
+                "questions": 1
+              },
+              {
+                "topic": "Tail Momentum",
+                "weight": 1.0,
+                "questions": 1
+              }
+            ]
+          },
+          "8": {
+            "mode": "adaptive",
+            "seeds": [
+              "Calexin-7",
+              "Calexin-7",
+              "CBMP",
+              "CBMP",
+              "PAMC"
+            ],
+            "weights": [
+              {
+                "topic": "Calexin-7",
+                "weight": 1.0,
+                "questions": 2
+              },
+              {
+                "topic": "CBMP",
+                "weight": 1.0,
+                "questions": 2
+              },
+              {
+                "topic": "PAMC",
+                "weight": 1.0,
+                "questions": 1
+              },
+              {
+                "topic": "Bofedal-3",
+                "weight": 0.3,
+                "questions": 0
+              },
+              {
+                "topic": "Cell Cóndor",
+                "weight": 0.3,
+                "questions": 0
+              }
+            ]
+          }
+        },
+        "regressions": []
+      },
+      "token_usage": {
+        "total": 57850,
+        "content": 17160,
+        "history": 0,
+        "total_input": 25350,
+        "instructions": 5668,
+        "system_prompt": 2522,
+        "output_reserve": 32500
+      },
+      "questions": [
+        {
+          "id": 42,
+          "section_id": 5,
+          "question_text": "What is the minimum required authority for engaging Tier 4 threats?",
+          "choice_a": "Field operative, solo",
+          "choice_b": "Lead officer, cell required",
+          "choice_c": "Lead officer + auxiliary on standby",
+          "choice_d": "Director-General authorization",
+          "correct_answer": "C",
+          "user_answer": "C",
+          "is_correct": true,
+          "explanation": "The text states that for Tier 4 threats, a lead officer is required, with an auxiliary on standby.",
+          "source_quote": "Tier 4 500 kJ – 50 MJ 101–5,000 civilians Lead officer + auxiliary on standby"
+        },
+        {
+          "id": 43,
+          "section_id": 5,
+          "question_text": "What is the purpose of the 'Drop-Tune' manoeuvre?",
+          "choice_a": "To increase the asset's speed during engagement",
+          "choice_b": "To allow the asset to suspend an object within ~0.3 seconds prior to trigger",
+          "choice_c": "To enable the asset to engage targets without verifying the contact-exclusion radius",
+          "choice_d": "To compress the reconnaissance schedule for solo deployments",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "The 'Drop-Tune' manoeuvre is a standard activation pattern that exploits the contact-exclusion rule, allowing the asset to release an object within ~0.3 seconds prior to trigger.",
+          "source_quote": "She can, however, suspend an object that she releases within ~0.3 seconds prior to trigger."
+        },
+        {
+          "id": 44,
+          "section_id": 5,
+          "question_text": "What is the maximum number of objects that can be simultaneously held in a Suspended Field using the tertiary Hold ability?",
+          "choice_a": "3",
+          "choice_b": "4",
+          "choice_c": "5",
+          "choice_d": "6",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "The maximum number of objects that can be simultaneously held in a Suspended Field is determined by the available activations within a 60-second window minus a 1-second suspension reserve.",
+          "source_quote": "Maximum simultaneously held objects: 4 (matching available activations within a 60-s window minus a 1-suspension reserve)"
+        },
+        {
+          "id": 45,
+          "section_id": 5,
+          "question_text": "What is the primary authority required for a Tier 3 threat engagement?",
+          "choice_a": "Field operative, solo",
+          "choice_b": "Lead officer, cell required",
+          "choice_c": "Director-General authorization",
+          "choice_d": "Cell Cóndor",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "According to the Threat Tier definitions, a Tier 3 threat requires a cell to be present, with the lead officer having full authority.",
+          "source_quote": "Tier 3 Cell required, lead authority"
+        },
+        {
+          "id": 46,
+          "section_id": 5,
+          "question_text": "What is the primary benefit of Tail Momentum in the Tail-Strike technique?",
+          "choice_a": "It allows for a more precise targeting window.",
+          "choice_b": "It enables the delivery of compounded impacts that cannot be achieved by linear projectile motion alone.",
+          "choice_c": "It reduces the metabolic cost of suspension.",
+          "choice_d": "It increases the average target mass per activation.",
+          "correct_answer": "B",
+          "user_answer": "D",
+          "is_correct": false,
+          "explanation": "Tail Momentum is the payoff of the Doctrine of Sequential Suspension, allowing for the delivery of compounded impacts that cannot be achieved by linear projectile motion alone. This property is termed Tail Momentum and underpins the Tail-Strike combat technique.",
+          "source_quote": "Tail momentum is the payoff. Plan terminal vectors before activating."
+        },
+        {
+          "id": 47,
+          "section_id": 8,
+          "question_text": "What is the standard quantity of Calexin-7 doses stored in a micro-cache?",
+          "choice_a": "6 blisters (12 doses)",
+          "choice_b": "4 blisters (8 doses)",
+          "choice_c": "8 blisters (16 doses)",
+          "choice_d": "2 blisters (4 doses)",
+          "correct_answer": "B",
+          "user_answer": "D",
+          "is_correct": false,
+          "explanation": "The standard cache contents are specified in the PAMC Logistics Form MC-04.",
+          "source_quote": "Standard cache contents (PAMC Logistics Form MC-04): Calexin-7 dose 4 blisters (8 doses)"
+        },
+        {
+          "id": 48,
+          "section_id": 8,
+          "question_text": "What is the standard quantity of Calexin-7 doses maintained in the micro-caches?",
+          "choice_a": "6 blisters",
+          "choice_b": "8 blisters",
+          "choice_c": "4 blisters",
+          "choice_d": "10 blisters",
+          "correct_answer": "C",
+          "user_answer": "C",
+          "is_correct": true,
+          "explanation": "The standard cache contents, as per the PAMC Logistics Form MC-04, include 4 blisters of Calexin-7 dose.",
+          "source_quote": "Standard cache contents (PAMC Logistics Form MC-04): Item Quantity Tungsten throwing batons (replacement) 2 Calexin-7 dose 4 blisters (8 doses)"
+        },
+        {
+          "id": 49,
+          "section_id": 8,
+          "question_text": "What is the purpose of the Cerro Castillo exclusion ring?",
+          "choice_a": "Strategic; ongoing classified PAMC investigation since 2023",
+          "choice_b": "Psychological; CBMP recommendation since 2020",
+          "choice_c": "Jurisdictional; pending bilateral agreement",
+          "choice_d": "Operational; ongoing PAMC operation",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "The Cerro Castillo exclusion ring is a restricted zone due to a psychological reason, as per the CBMP recommendation since 2020.",
+          "source_quote": "Psychological; CBMP recommendation since 2020"
+        },
+        {
+          "id": 50,
+          "section_id": 8,
+          "question_text": "What is the purpose of the Cerro Castillo exclusion ring?",
+          "choice_a": "Psychological; to protect the asset from external threats",
+          "choice_b": "Psychological; CBMP recommendation since 2020",
+          "choice_c": "Strategic; ongoing classified PAMC investigation since 2023",
+          "choice_d": "Jurisdictional; pending bilateral agreement",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "The Cerro Castillo exclusion ring is a restricted zone due to psychological reasons, as recommended by CBMP since 2020. This is evident from the context where it is mentioned that the asset has not entered the area since the 2018 incident.",
+          "source_quote": "Psychological; CBMP recommendation since 2020"
+        },
+        {
+          "id": 51,
+          "section_id": 8,
+          "question_text": "What is the purpose of the Cerro Castillo exclusion ring within the asset's operational territory?",
+          "choice_a": "Strategic; ongoing classified PAMC investigation",
+          "choice_b": "Psychological; CBMP recommendation since 2020",
+          "choice_c": "Jurisdictional; pending bilateral agreement",
+          "choice_d": "Operational; required for satellite uplink",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "The Cerro Castillo exclusion ring is a formally restricted zone within the asset's operational territory due to a psychological reason, as recommended by the CBMP since 2020.",
+          "source_quote": "Cerro Castillo exclusion ring (1.6 km radius around the 2018 trigger site) Psychological; CBMP recommendation since 2020"
+        }
+      ]
+    },
+    {
+      "session_id": 16,
+      "sections_studied": [
+        2
+      ],
+      "is_cold_start": false,
+      "difficulty_level": "easy",
+      "score_pct": 100.0,
+      "correct_count": 3,
+      "wrong_count": 0,
+      "total_questions": 3,
+      "started_at": "2026-05-26T14:18:55.031441+00:00",
+      "completed_at": "2026-05-26T14:20:44.025912+00:00",
+      "adaptive_context": {
+        "summary": "WEAK TOPICS — generate questions emphasising these:\n  • Inertial Suspension (§2) — section weight 1.95, global 1.95, wrong 1×\n  • Echo Lock (§2) — section weight 1.95, global 1.95, wrong 1×\n  • CBMP (§2) — section weight 1.95, global 1.95, wrong 1×\n\nRECENT QUESTION THEMES (do NOT repeat these verbatim):\n  - What is the primary consequence of Inertial Suspension on the suspended object's gravitational mass?\n  - What is the primary symptom of Echo Lock failure mode?\n  - What is the primary rationale behind the Director-General-only authorization requirement for Mar Inverso engagement?",
+        "allocation": {
+          "2": {
+            "mode": "adaptive",
+            "seeds": [
+              "CBMP",
+              "Echo Lock",
+              "Inertial Suspension"
+            ],
+            "weights": [
+              {
+                "topic": "CBMP",
+                "weight": 3.8,
+                "questions": 1
+              },
+              {
+                "topic": "Echo Lock",
+                "weight": 3.8,
+                "questions": 1
+              },
+              {
+                "topic": "Inertial Suspension",
+                "weight": 3.8,
+                "questions": 1
+              },
+              {
+                "topic": "Mar Inverso",
+                "weight": 1.0,
+                "questions": 0
+              },
+              {
+                "topic": "PAMC",
+                "weight": 1.0,
+                "questions": 0
+              }
+            ]
+          }
+        },
+        "regressions": []
+      },
+      "token_usage": {
+        "total": 19788,
+        "content": 6628,
+        "history": 640,
+        "total_input": 9788,
+        "instructions": 1744,
+        "system_prompt": 776,
+        "output_reserve": 10000
+      },
+      "questions": [
+        {
+          "id": 39,
+          "section_id": 2,
+          "question_text": "What type of signatures are detectable approximately 0.4 seconds before the asset initiates targeting?",
+          "choice_a": "Power-Onset Pre-Activation Signatures",
+          "choice_b": "Operational Tell-Tale Indicators",
+          "choice_c": "Inertial Suspension",
+          "choice_d": "Echo Lock",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "CBMP has documented three measurable pre-activation physiological signatures detectable approximately 0.4 seconds before the asset initiates targeting.",
+          "source_quote": "CBMP has documented three measurable pre-activation physiological signatures detectable approximately 0.4 seconds before the asset initiates targeting:"
+        },
+        {
+          "id": 40,
+          "section_id": 2,
+          "question_text": "What is the duration of the targeting freeze observed in Echo Lock failure mode?",
+          "choice_a": "1 second",
+          "choice_b": "4 seconds",
+          "choice_c": "10 seconds",
+          "choice_d": "20 seconds",
+          "correct_answer": "B",
+          "user_answer": "B",
+          "is_correct": true,
+          "explanation": "Echo Lock is a neurological seizure-equivalent observed twice in operational record: 19 November 2020 (training environment, Lima) and 14 August 2023 (combat environment, Salta). Symptoms include a 4-second targeting freeze in which the asset cannot acquire new targets, cannot voluntarily release a current suspension, and experiences pronounced cervical spasm.",
+          "source_quote": "a 4-second targeting freeze in which the asset cannot acquire new targets, cannot voluntarily release a current suspension, and experiences pronounced cervical spasm."
+        },
+        {
+          "id": 41,
+          "section_id": 2,
+          "question_text": "What is the primary effect of Inertial Suspension on a suspended object's gravitational mass?",
+          "choice_a": "It has no effect on the object's gravitational mass.",
+          "choice_b": "It reduces the object's gravitational mass.",
+          "choice_c": "It retains the object's gravitational mass.",
+          "choice_d": "It increases the object's gravitational mass.",
+          "correct_answer": "C",
+          "user_answer": "C",
+          "is_correct": true,
+          "explanation": "According to the operative theory of mechanism, the Calvache–Marrón Equations posit a transient local discontinuity in the conserved-momentum tensor, sustained by metabolic substrate drawn from the asset's central nervous system. This discontinuity is bounded in mass, duration, range, and recurrence, all of which have been experimentally calibrated. When the effect is active, the suspended object retains its gravitational mass.",
+          "source_quote": "The operative theory of mechanism — the Calvache–Marrón Equations — was developed jointly by the asset and CBMP physicist Dr. Léon Marrón-Saavedra and published in restricted form on 11 May 2022."
+        }
+      ]
+    },
+    {
+      "session_id": 15,
+      "sections_studied": [
+        2
+      ],
+      "is_cold_start": true,
+      "difficulty_level": "medium",
+      "score_pct": 0.0,
+      "correct_count": 0,
+      "wrong_count": 3,
+      "total_questions": 3,
+      "started_at": "2026-05-26T14:17:52.475137+00:00",
+      "completed_at": "2026-05-26T14:18:50.865257+00:00",
+      "adaptive_context": {
+        "allocation": {
+          "2": {
+            "mode": "adaptive",
+            "seeds": [
+              "CBMP",
+              "Echo Lock",
+              "Inertial Suspension"
+            ],
+            "weights": [
+              {
+                "topic": "CBMP",
+                "weight": 1.0,
+                "questions": 1
+              },
+              {
+                "topic": "Echo Lock",
+                "weight": 1.0,
+                "questions": 1
+              },
+              {
+                "topic": "Inertial Suspension",
+                "weight": 1.0,
+                "questions": 1
+              },
+              {
+                "topic": "Mar Inverso",
+                "weight": 1.0,
+                "questions": 0
+              },
+              {
+                "topic": "PAMC",
+                "weight": 1.0,
+                "questions": 0
+              }
+            ]
+          }
+        },
+        "regressions": []
+      },
+      "token_usage": {
+        "total": 14248,
+        "content": 4858,
+        "history": 0,
+        "total_input": 6748,
+        "instructions": 1308,
+        "system_prompt": 582,
+        "output_reserve": 7500
+      },
+      "questions": [
+        {
+          "id": 36,
+          "section_id": 2,
+          "question_text": "What is the primary rationale behind the Director-General-only authorization requirement for Mar Inverso engagement?",
+          "choice_a": "To prevent unauthorized use of the asset's power",
+          "choice_b": "Due to the high risk of cascade failure in mass transfer scenarios",
+          "choice_c": "Because Mar Inverso's inertial inversion capability is the operational inverse of SLATEFALL's power",
+          "choice_d": "To maintain operational secrecy",
+          "correct_answer": "C",
+          "user_answer": "D",
+          "is_correct": false,
+          "explanation": "The Director-General-only authorization requirement is in place because Mar Inverso's inertial inversion capability is the operational inverse of SLATEFALL's power, making it a significant counter-symmetric threat. The asset is not currently authorized to engage Mar Inverso solo.",
+          "source_quote": "If confirmed, Mar Inverso would represent the only known operational counter-symmetric threat to SLATEFALL's primary power."
+        },
+        {
+          "id": 37,
+          "section_id": 2,
+          "question_text": "What is the primary symptom of Echo Lock failure mode?",
+          "choice_a": "Targeting freeze with pronounced cervical spasm",
+          "choice_b": "Activation failure with neural feedback",
+          "choice_c": "Partial suspension of a fraction of the target",
+          "choice_d": "Full activation without any symptoms",
+          "correct_answer": "A",
+          "user_answer": "D",
+          "is_correct": false,
+          "explanation": "Echo Lock is a neurological seizure-equivalent observed twice in operational record, characterized by a 4-second targeting freeze in which the asset cannot acquire new targets, cannot voluntarily release a current suspension, and experiences pronounced cervical spasm.",
+          "source_quote": "Symptoms: a 4-second targeting freeze in which the asset cannot acquire new targets, cannot voluntarily release a current suspension, and experiences pronounced cervical spasm."
+        },
+        {
+          "id": 38,
+          "section_id": 2,
+          "question_text": "What is the primary consequence of Inertial Suspension on the suspended object's gravitational mass?",
+          "choice_a": "It loses its gravitational mass",
+          "choice_b": "It retains its gravitational mass",
+          "choice_c": "It gains additional gravitational mass",
+          "choice_d": "Its gravitational mass is unaffected",
+          "correct_answer": "B",
+          "user_answer": "D",
+          "is_correct": false,
+          "explanation": "The suspended object retains its gravitational mass, but with no resistance to lateral force (§2.1).",
+          "source_quote": "retains its gravitational mass (small objects still fall in earth gravity, but with no resistance to lateral force)"
+        }
+      ]
+    }
+  ],
+  "adaptive_state": {
+    "top_weak_topics": [
+      {
+        "name": "CBMP",
+        "slug": "cbmp",
+        "weight": 1.95,
+        "times_wrong": 1,
+        "times_correct": 0,
+        "streak": -1
+      },
+      {
+        "name": "SLATEFALL",
+        "slug": "slatefall",
+        "weight": 1.95,
+        "times_wrong": 1,
+        "times_correct": 0,
+        "streak": -1
+      }
+    ],
+    "mastered_topics": []
+  }
+}

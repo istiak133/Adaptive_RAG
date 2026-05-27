@@ -101,6 +101,48 @@ def quote_appears_in_context(
     return coverage >= threshold
 
 
+def _normalise_for_dedup(text: str) -> str:
+    """Lowercase, collapse whitespace, strip trailing punctuation/§ refs.
+
+    Two questions that differ only in §-citation or trailing period should
+    compare identical for duplicate-detection purposes.
+    """
+    t = re.sub(r"\s+", " ", text.lower().strip())
+    t = re.sub(r"[§]\s*\d+(\.\d+)*", "", t)  # drop §X.Y references
+    t = re.sub(r"[^\w\s]", "", t)            # drop punctuation
+    return t.strip()
+
+
+def is_near_duplicate(
+    candidate: str,
+    previously_asked: List[str],
+    threshold: Optional[float] = None,
+) -> Optional[float]:
+    """Return the similarity ratio if `candidate` is close enough to any
+    string in `previously_asked` to count as a duplicate, else None.
+
+    Uses SequenceMatcher's `ratio()` — symmetric, 0–1.
+    """
+    if not previously_asked:
+        return None
+    threshold = (
+        threshold
+        if threshold is not None
+        else settings.mcq.near_duplicate_threshold
+    )
+    cand = _normalise_for_dedup(candidate)
+    if not cand:
+        return None
+    for prev in previously_asked:
+        prev_norm = _normalise_for_dedup(prev)
+        if not prev_norm:
+            continue
+        ratio = SequenceMatcher(None, cand, prev_norm, autojunk=False).ratio()
+        if ratio >= threshold:
+            return ratio
+    return None
+
+
 # ── Public validation entry point ────────────────────────────────────
 
 
@@ -109,18 +151,26 @@ def validate_response(
     context: str,
     expected_count: int,
     require_source_quote: Optional[bool] = None,
+    recent_question_texts: Optional[List[str]] = None,
 ) -> ValidationReport:
     """Parse and validate the LLM's raw response.
 
     LangChain's JsonOutputParser does the heavy lifting (markdown fences,
-    JSON extraction, Pydantic schema validation). We then apply our
-    hallucination guard.
+    JSON extraction, Pydantic schema validation). On top of that we apply:
+      • a hallucination guard (source_quote must appear in retrieved context)
+      • a near-duplicate guard (question_text vs recent questions in the KB)
+
+    The duplicate guard also tracks question_texts accepted *in this batch*
+    so the LLM can't sneak two near-identical MCQs past in a single call.
     """
     require_source_quote = (
         require_source_quote
         if require_source_quote is not None
         else settings.mcq.require_source_quote
     )
+    dedup_enabled = settings.mcq.reject_near_duplicates
+    # Local copy so we can append in-batch accepted texts as we go.
+    seen_texts: List[str] = list(recent_question_texts or [])
 
     report = ValidationReport()
     parser = get_parser()
@@ -159,7 +209,18 @@ def validate_response(
             )
             continue
 
+        if dedup_enabled:
+            dup_ratio = is_near_duplicate(mcq.question_text, seen_texts)
+            if dup_ratio is not None:
+                report.add_rejection(
+                    mcq.model_dump(),
+                    f"near_duplicate: ratio={dup_ratio:.2f} "
+                    f"(question: {mcq.question_text[:80]!r})",
+                )
+                continue
+
         report.accepted.append(mcq)
+        seen_texts.append(mcq.question_text)
 
     return report
 

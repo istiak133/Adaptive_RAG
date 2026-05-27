@@ -53,12 +53,14 @@ def generate_mcqs(
     query_seed: Optional[str] = None,
     adaptive_context: str = "",
     topic_hint: str = "",
+    recent_question_texts: Optional[List[str]] = None,
 ) -> MCQGenerationResult:
     """Generate MCQs from given sections.
 
-    `query_seed`         — biases the semantic search toward a topic
-    `adaptive_context`   — WEAK/MASTERED summary injected into the prompt
-    `topic_hint`         — single-topic focus for this batch (used by allocator)
+    `query_seed`              — biases the semantic search toward a topic
+    `adaptive_context`        — WEAK/MASTERED summary injected into the prompt
+    `topic_hint`              — single-topic focus for this batch (used by allocator)
+    `recent_question_texts`   — passed to the validator's near-duplicate guard
     """
     t0 = time.time()
 
@@ -114,6 +116,7 @@ def generate_mcqs(
         raw_text=raw_output,
         context=prompt.content,
         expected_count=n_questions,
+        recent_question_texts=recent_question_texts,
     )
 
     return MCQGenerationResult(

@@ -119,6 +119,8 @@ class McqConfig(BaseModel):
     hallucination_fuzzy_threshold: float = Field(ge=0.0, le=1.0)
     validate_unique_choices: bool
     glossary_section_strategy: str
+    reject_near_duplicates: bool = True
+    near_duplicate_threshold: float = Field(default=0.65, ge=0.0, le=1.0)
 
 
 class AdaptiveConfig(BaseModel):

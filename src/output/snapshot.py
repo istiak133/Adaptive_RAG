@@ -25,25 +25,44 @@ from src.kb.models import (
 def build_kb_snapshot(
     session: Session, after_session_id: Optional[int] = None,
 ) -> Dict[str, Any]:
-    """Return the top-N recent session records + adaptive state."""
+    """Return the top-N recent session records + adaptive state.
+
+    When `after_session_id` is supplied, the snapshot is filtered to sessions
+    that existed at or before that ID. This makes per-iteration snapshots
+    point-in-time correct — re-running the export later won't bleed in
+    sessions that came after the iteration completed.
+    """
     limit = settings.snapshot.recent_sessions_count
 
-    recent = session.execute(
+    stmt = (
         select(SessionRow)
         .order_by(desc(SessionRow.started_at))
-        .limit(limit)
         .options(joinedload(SessionRow.questions).joinedload(Question.answer))
-    ).unique().scalars().all()
+    )
+    if after_session_id is not None:
+        stmt = stmt.where(SessionRow.id <= after_session_id)
+    stmt = stmt.limit(limit)
+
+    recent = session.execute(stmt).unique().scalars().all()
 
     session_records = []
     for s in recent:
         questions_block = []
         if settings.snapshot.include_questions:
             for q in s.questions:
+                # Shape matches the `QuestionView` Pydantic model used by the
+                # /sessions/{id}/snapshot REST endpoint. Includes the four MCQ
+                # choices so a reviewer reading the snapshot can see exactly
+                # what options were presented for each question — without this,
+                # only the correct-answer letter is visible.
                 questions_block.append({
-                    "question_id": q.id,
+                    "id": q.id,
                     "section_id": q.section_id,
                     "question_text": q.question_text,
+                    "choice_a": q.choice_a,
+                    "choice_b": q.choice_b,
+                    "choice_c": q.choice_c,
+                    "choice_d": q.choice_d,
                     "correct_answer": q.correct_answer,
                     "user_answer": q.answer.user_answer if q.answer else None,
                     "is_correct": q.answer.is_correct if q.answer else None,
@@ -57,8 +76,8 @@ def build_kb_snapshot(
             "is_cold_start": s.is_cold_start,
             "difficulty_level": s.difficulty_level,
             "score_pct": s.score_pct,
-            "correct": s.correct_count,
-            "wrong": s.wrong_count,
+            "correct_count": s.correct_count,
+            "wrong_count": s.wrong_count,
             "total_questions": s.total_questions,
             "started_at": s.started_at.isoformat() if s.started_at else None,
             "completed_at": s.completed_at.isoformat() if s.completed_at else None,

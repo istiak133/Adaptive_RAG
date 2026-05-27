@@ -18,6 +18,7 @@ from src.kb.models import Session as SessionRow
 from src.prep import scorer, simulator
 from src.prep.allocator import allocate
 from src.prep.difficulty import pick_difficulty
+from src.kb.models import Question as QuestionRow
 from src.rag.history_compressor import build_adaptive_context
 from src.services import session_service
 from src.services.session_service import GeneratedQuestion
@@ -110,6 +111,27 @@ def create_session_node(
     }
 
 
+def _prior_question_texts(
+    session: Session,
+    section_ids: List[int],
+    limit: int = 50,
+) -> List[str]:
+    """Pull question_text strings from past completed sessions covering these
+    sections, used by the validator's near-duplicate guard to hard-block the
+    LLM from restating questions the user has already seen."""
+    rows = session.execute(
+        select(QuestionRow.question_text)
+        .join(SessionRow, QuestionRow.session_id == SessionRow.id)
+        .where(
+            QuestionRow.section_id.in_(section_ids),
+            SessionRow.completed_at.is_not(None),
+        )
+        .order_by(QuestionRow.id.desc())
+        .limit(limit)
+    ).all()
+    return [r[0] for r in rows]
+
+
 def generate_node(state: PrepState, *, session: Session) -> Dict[str, Any]:
     """Per-section allocation → per-seed LLM call with retry (max 3)."""
     from src.services.prep_service import generate_mcqs  # avoid circular
@@ -128,6 +150,13 @@ def generate_node(state: PrepState, *, session: Session) -> Dict[str, Any]:
         dict(state.get("allocation_summary") or {})
     )
     retry_count = state.get("retry_count", 0)
+
+    # Build the historical question-text list once per node invocation, then
+    # extend it locally as MCQs are accepted so seeds later in the loop won't
+    # duplicate seeds earlier in the same run.
+    seen_texts: List[str] = _prior_question_texts(session, section_ids)
+    for g in all_generated:
+        seen_texts.append(g.mcq.question_text)
 
     expected_total = n_per_section * len(section_ids)
     already_have = len(all_generated)
@@ -165,6 +194,7 @@ def generate_node(state: PrepState, *, session: Session) -> Dict[str, Any]:
                     query_seed=seed_topic,
                     adaptive_context=adaptive_context,
                     topic_hint=seed_topic if plan.mode != "cold" else "",
+                    recent_question_texts=seen_texts,
                 )
                 chunks_used[sec_id].extend(gen.chunks_used)
                 for k in token_usage:
@@ -177,6 +207,7 @@ def generate_node(state: PrepState, *, session: Session) -> Dict[str, Any]:
                             mcq=mcq,
                             source_sub_ids=gen.chunks_used,
                         ))
+                        seen_texts.append(mcq.question_text)
                     mcq_added = True
                     break
 

@@ -1,0 +1,265 @@
+{
+  "session_id": 20,
+  "sections_studied": [
+    1,
+    2
+  ],
+  "is_cold_start": false,
+  "score_pct": 80.0,
+  "exported_at": "2026-05-26T15:48:52.330859+00:00",
+  "questions": [
+    {
+      "id": 72,
+      "section_id": 1,
+      "source_chunk_ids": [
+        586,
+        591,
+        590,
+        587,
+        588
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the name of the mountain warfare training facility where the asset received their certification?",
+      "choices": {
+        "A": "Escuela Militar Bernardo O'Higgins",
+        "B": "Centro de Entrenamiento de Montaña (CEM)",
+        "C": "Universidad de Chile",
+        "D": "International Mountain Federation"
+      },
+      "correct_answer": "B",
+      "explanation": "The asset received their Mountain Warfare Instructor Certification from the Centro de Entrenamiento de Montaña (CEM) in Río Blanco.",
+      "source_quote": "2010–2012 Centro de Entrenamiento de Montaña (CEM), Río Blanco Mountain Warfare Instructor Certification, Grade A",
+      "user_answer": "B",
+      "is_correct": true
+    },
+    {
+      "id": 73,
+      "section_id": 1,
+      "source_chunk_ids": [
+        593,
+        586,
+        589,
+        592,
+        587
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the primary specialty of Inez Calvache-Renström during her time as a senior instructor at CEM Río Blanco?",
+      "choices": {
+        "A": "Rope-rescue and ice-traverse",
+        "B": "High-altitude assault and CQB",
+        "C": "Rope-rescue and high-altitude assault",
+        "D": "Ice-traverse and CQB"
+      },
+      "correct_answer": "A",
+      "explanation": "According to §1.4 Pre-Powers Military Service, Inez Calvache-Renström's primary specialty as a senior instructor at CEM Río Blanco was rope-rescue, ice-traverse, and high-altitude assault.",
+      "source_quote": "primary specialty in rope-rescue, ice-traverse, and high-altitude assault",
+      "user_answer": "A",
+      "is_correct": true
+    },
+    {
+      "id": 74,
+      "section_id": 1,
+      "source_chunk_ids": [
+        588,
+        589,
+        586,
+        590,
+        591
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the codename assigned to the asset SLATEFALL, derived from its powers-emergence event?",
+      "choices": {
+        "A": "Echo Lock",
+        "B": "La Detención",
+        "C": "0-3-Castillo",
+        "D": "Cerro Castillo"
+      },
+      "correct_answer": "D",
+      "explanation": "The codename 'Cerro Castillo' is assigned by the PAMC Naming Subcommittee, derived from the asset's powers-emergence event on the eastern slate face of Cerro Castillo.",
+      "source_quote": "codename was assigned by the PAMC Naming Subcommittee on 7 May 2019, derived from the asset's powers-emergence event on the eastern slate face of Cerro Castillo,",
+      "user_answer": "D",
+      "is_correct": true
+    },
+    {
+      "id": 75,
+      "section_id": 1,
+      "source_chunk_ids": [
+        586,
+        592,
+        591,
+        589,
+        593
+      ],
+      "difficulty": "medium",
+      "question_text": "What is Calvache-Renström's rank at the time of his medical discharge from the Chilean Army?",
+      "choices": {
+        "A": "Capitán",
+        "B": "Teniente",
+        "C": "Coronel",
+        "D": "General"
+      },
+      "correct_answer": "A",
+      "explanation": "Calvache-Renström served in the Chilean Army for 14 years, from commissioning on 12 December 2009 through medical discharge on 28 February 2019. Rank at discharge: Capitán.",
+      "source_quote": "Rank at discharge: Capitán (Captain).",
+      "user_answer": "A",
+      "is_correct": true
+    },
+    {
+      "id": 76,
+      "section_id": 1,
+      "source_chunk_ids": [
+        592,
+        586,
+        588,
+        590,
+        593
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the primary reason for SLATEFALL's public registration and identification?",
+      "choices": {
+        "A": "To facilitate media relations and public outreach",
+        "B": "To enhance operational security and covert capabilities",
+        "C": "To comply with PAMC Protocol 4-Bravo",
+        "D": "To increase transparency and accountability within the organization"
+      },
+      "correct_answer": "D",
+      "explanation": "SLATEFALL is publicly registered and identified to increase transparency and accountability within the organization, as stated in §1.8 Public Status.",
+      "source_quote": "Public-facing media presence is otherwise restricted under PAMC Protocol 4-Bravo.",
+      "user_answer": "C",
+      "is_correct": false
+    },
+    {
+      "id": 77,
+      "section_id": 2,
+      "source_chunk_ids": [
+        610,
+        614,
+        612,
+        599,
+        613,
+        647,
+        674
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the term for the property that allows a suspended object to retain its linear and angular momentum vector after suspension ends?",
+      "choices": {
+        "A": "Tail Momentum",
+        "B": "Inertial Suspension",
+        "C": "Echo Lock",
+        "D": "Mass Transfer"
+      },
+      "correct_answer": "A",
+      "explanation": "The term Tail Momentum refers to the property that allows a suspended object to retain its linear and angular momentum vector after suspension ends, as stated in §2.6 Tail Momentum.",
+      "source_quote": "When the suspension ends, the target resumes its prior linear and angular momentum vector exactly — direction, magnitude, and rotation.",
+      "user_answer": "D",
+      "is_correct": false
+    },
+    {
+      "id": 78,
+      "section_id": 2,
+      "source_chunk_ids": [
+        606,
+        609,
+        604,
+        596,
+        610,
+        674,
+        595,
+        649,
+        667
+      ],
+      "difficulty": "medium",
+      "question_text": "What is a symptom of Echo Lock failure mode?",
+      "choices": {
+        "A": "Targeting freeze for 1 second",
+        "B": "Targeting freeze for 4 seconds, inability to release a current suspension, and pronounced cervical spasm",
+        "C": "Targeting failure rate increase in heavy precipitation",
+        "D": "Activation failure with neural feedback above the 240 kg ceiling"
+      },
+      "correct_answer": "B",
+      "explanation": "Echo Lock failure mode is characterized by a 4-second targeting freeze, inability to release a current suspension, and pronounced cervical spasm, as documented in §2.13 Echo Lock Failure Mode.",
+      "source_quote": "Symptoms: a 4-second targeting freeze in which the asset cannot acquire new targets, cannot voluntarily release a current suspension, and experiences pronounced cervical spasm.",
+      "user_answer": "B",
+      "is_correct": true
+    },
+    {
+      "id": 79,
+      "section_id": 2,
+      "source_chunk_ids": [
+        594,
+        602,
+        604,
+        605,
+        599,
+        618,
+        649,
+        647
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the maximum number of low-mass objects that can be simultaneously held in mid-air using the tertiary Hold ability?",
+      "choices": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "5"
+      },
+      "correct_answer": "C",
+      "explanation": "The tertiary Hold ability allows the asset to maintain multiple low-mass objects in mid-air, with a maximum of 4 objects simultaneously held.",
+      "source_quote": "objects up to 2 kg. It permits sustained suspension for up to 4.0 seconds at a metabolic cost approximately equal to a single full-duration standard suspension.",
+      "user_answer": "C",
+      "is_correct": true
+    },
+    {
+      "id": 80,
+      "section_id": 2,
+      "source_chunk_ids": [
+        613,
+        594,
+        611,
+        602,
+        612,
+        618,
+        674,
+        599
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the primary rationale behind the Director-General-only authorization requirement for Mar Inverso engagement?",
+      "choices": {
+        "A": "The asset's powers-emergence event on Cerro Castillo",
+        "B": "The projected Tier 5 capability of Mar Inverso",
+        "C": "The third scenario of the comparative counter-threat profile",
+        "D": "Annual re-evaluation of power parameters"
+      },
+      "correct_answer": "C",
+      "explanation": "The third scenario is the most concerning and is the rationale behind the Director-General-only authorization requirement for Mar Inverso engagement.",
+      "source_quote": "The third scenario is the most concerning and is the rationale behind the Director-General-only authorization requirement for Mar Inverso engagement.",
+      "user_answer": "C",
+      "is_correct": true
+    },
+    {
+      "id": 81,
+      "section_id": 2,
+      "source_chunk_ids": [
+        611,
+        610,
+        612,
+        613,
+        614,
+        674
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the primary power exhibited by the asset SLATEFALL?",
+      "choices": {
+        "A": "Mass transfer (redistributing inertia between objects)",
+        "B": "Mass multiplication (inverse symmetry)",
+        "C": "Mass imprint (locking momentum onto target)",
+        "D": "Inertial nullification"
+      },
+      "correct_answer": "D",
+      "explanation": "SLATEFALL is the only documented case of true inertial nullification, which means it can nullify the inertia of a target object.",
+      "source_quote": "SLATEFALL is the only documented case of true inertial nullification (the others act on energy transfer rather than mass)",
+      "user_answer": "D",
+      "is_correct": true
+    }
+  ]
+}

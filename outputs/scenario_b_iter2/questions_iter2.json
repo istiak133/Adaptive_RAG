@@ -1,0 +1,393 @@
+{
+  "session_id": 18,
+  "sections_studied": [
+    6,
+    8,
+    9
+  ],
+  "is_cold_start": false,
+  "score_pct": 86.6666666666667,
+  "exported_at": "2026-05-26T14:39:54.715585+00:00",
+  "questions": [
+    {
+      "id": 52,
+      "section_id": 6,
+      "source_chunk_ids": [
+        654,
+        655,
+        660,
+        664,
+        661,
+        670
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the primary threat profile of Inspector General Magnus Sletten against the asset SLATEFALL?",
+      "choices": {
+        "A": "Physical harm",
+        "B": "Operational restriction",
+        "C": "Metahuman capability",
+        "D": "Bureaucratic action"
+      },
+      "correct_answer": "B",
+      "explanation": "Inspector General Sletten's threat profile is operational restriction, not physical harm, due to his bureaucratic position.",
+      "source_quote": "The threat is operational restriction, not physical harm.",
+      "user_answer": "B",
+      "is_correct": true
+    },
+    {
+      "id": 53,
+      "section_id": 6,
+      "source_chunk_ids": [
+        654,
+        655,
+        660,
+        664,
+        661,
+        670
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the administrative assignment of SLATEFALL within the Pan-American Metahuman Cooperative?",
+      "choices": {
+        "A": "Behavioral Health Directorate",
+        "B": "Operations Directorate",
+        "C": "Logistics Directorate",
+        "D": "Cooperative Bureau of Metahuman Physics (CBMP)"
+      },
+      "correct_answer": "B",
+      "explanation": "SLATEFALL is administratively assigned to the Andean Operations Bureau under the Operations Directorate.",
+      "source_quote": "The Cooperative operates four directorates: Operations, Behavioral Health, Logistics, and the Cooperative Bureau of Metahuman Physics (CBMP). SLATEFALL is administratively assigned to the Andean Operations Bureau under the Operations Directorate.",
+      "user_answer": "B",
+      "is_correct": true
+    },
+    {
+      "id": 54,
+      "section_id": 6,
+      "source_chunk_ids": [
+        664,
+        661,
+        657,
+        662,
+        659,
+        612
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the role of Dr. Léon Marrón-Saavedra in relation to the asset?",
+      "choices": {
+        "A": "He is the asset's mental health practitioner.",
+        "B": "He is the asset's direct chain-of-command superior.",
+        "C": "He conducts annual scientific re-evaluations of the asset's power.",
+        "D": "He is a former CEM cadre."
+      },
+      "correct_answer": "C",
+      "explanation": "Dr. Léon Marrón-Saavedra conducts annual scientific re-evaluations of the asset's power, as stated in §6.4 Senior PAMC Allies.",
+      "source_quote": "Senior scientist, CBMP; Co-author of the Calvache–Marrón Equations; Conducts annual scientific re-evaluations of the asset's power (§2.19)",
+      "user_answer": "C",
+      "is_correct": true
+    },
+    {
+      "id": 55,
+      "section_id": 6,
+      "source_chunk_ids": [
+        655,
+        656,
+        664,
+        661,
+        654,
+        632
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the primary specialty of Sgt. Mateo Quispe-Linares?",
+      "choices": {
+        "A": "High-altitude tracking, alpine reconnaissance",
+        "B": "Trauma surgery, altitude medicine, metahuman physiology",
+        "C": "Neural-telemetry units engineering",
+        "D": "CBMP physicist"
+      },
+      "correct_answer": "A",
+      "explanation": "Sgt. Mateo Quispe-Linares has prior service in the Bolivian Special Forces, Regimiento Bolívar, 14 years, specializing in high-altitude tracking and alpine reconnaissance.",
+      "source_quote": "Specialty: high-altitude tracking, alpine reconnaissance",
+      "user_answer": "A",
+      "is_correct": true
+    },
+    {
+      "id": 56,
+      "section_id": 6,
+      "source_chunk_ids": [
+        658,
+        661,
+        662,
+        657,
+        659,
+        684,
+        612
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the role of Hermana Asunta Mendieta in the PAMC network?",
+      "choices": {
+        "A": "She is a civilian intelligence asset based in La Paz.",
+        "B": "She is a non-combatant safehouse keeper, Cuzco.",
+        "C": "She is a pediatric trauma surgeon, civilian-casualty triage.",
+        "D": "She is a lawyer, civilian-affairs counsel."
+      },
+      "correct_answer": "B",
+      "explanation": "Hermana Asunta Mendieta is a non-combatant safehouse keeper, providing medical and shelter services during transit operations.",
+      "source_quote": "Non-combatant safehouse keeper, Cuzco (PAMC Safehouse C-3, §8.4)",
+      "user_answer": "D",
+      "is_correct": false
+    },
+    {
+      "id": 57,
+      "section_id": 8,
+      "source_chunk_ids": [
+        684,
+        681,
+        687,
+        683,
+        682,
+        658
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the standard quantity of Calexin-7 doses stored in a micro-cache?",
+      "choices": {
+        "A": "2 blisters (4 doses)",
+        "B": "4 blisters (8 doses)",
+        "C": "6 blisters (12 doses)",
+        "D": "8 blisters (16 doses)"
+      },
+      "correct_answer": "B",
+      "explanation": "The standard cache contents for a micro-cache include 4 blisters (8 doses) of Calexin-7, as per the PAMC Logistics Form MC-04.",
+      "source_quote": "Standard cache contents (PAMC Logistics Form MC-04): Item Quantity Tungsten throwing batons (replacement) 2 Calexin-7 dose 4 blisters (8 doses) Bofedal-3 electrolyte concentrate 4 packets",
+      "user_answer": "D",
+      "is_correct": false
+    },
+    {
+      "id": 58,
+      "section_id": 8,
+      "source_chunk_ids": [
+        684,
+        681,
+        687,
+        683,
+        682,
+        658
+      ],
+      "difficulty": "medium",
+      "question_text": "How many Calexin-7 doses are stored in a standard micro-cache?",
+      "choices": {
+        "A": "4",
+        "B": "8",
+        "C": "12",
+        "D": "16"
+      },
+      "correct_answer": "B",
+      "explanation": "The standard cache contents, as described in PAMC Logistics Form MC-04, include 4 blisters of Calexin-7, which equates to 8 doses.",
+      "source_quote": "Standard cache contents (PAMC Logistics Form MC-04):\nItem\nQuantity\nTungsten throwing batons (replacement)\n2\nCalexin-7 dose\n4 blisters (8 doses)",
+      "user_answer": "B",
+      "is_correct": true
+    },
+    {
+      "id": 59,
+      "section_id": 8,
+      "source_chunk_ids": [
+        684,
+        681,
+        687,
+        683,
+        682,
+        658
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the standard quantity of Calexin-7 doses stored in a micro-cache?",
+      "choices": {
+        "A": "2 blisters (4 doses)",
+        "B": "4 blisters (8 doses)",
+        "C": "6 blisters (12 doses)",
+        "D": "8 blisters (16 doses)"
+      },
+      "correct_answer": "B",
+      "explanation": "The asset maintains a network of 19 micro-caches, with a standard cache contents list specifying 4 blisters (8 doses) of Calexin-7.",
+      "source_quote": "Standard cache contents (PAMC Logistics Form MC-04): Calexin-7 dose 4 blisters (8 doses)",
+      "user_answer": "B",
+      "is_correct": true
+    },
+    {
+      "id": 60,
+      "section_id": 8,
+      "source_chunk_ids": [
+        684,
+        686,
+        683,
+        681,
+        687,
+        658
+      ],
+      "difficulty": "medium",
+      "question_text": "How many packets of Bofedal-3 electrolyte concentrate are stored in each standard cache?",
+      "choices": {
+        "A": "2 packets",
+        "B": "4 packets",
+        "C": "6 packets",
+        "D": "8 packets"
+      },
+      "correct_answer": "B",
+      "explanation": "According to the PAMC Logistics Form MC-04, standard cache contents include 4 packets of Bofedal-3 electrolyte concentrate.",
+      "source_quote": "Standard cache contents (PAMC Logistics Form MC-04): Item Quantity Tungsten throwing batons (replacement) 2 Calexin-7 dose 4 blisters (8 doses) Bofedal-3 electrolyte concentrate 4 packets",
+      "user_answer": "B",
+      "is_correct": true
+    },
+    {
+      "id": 61,
+      "section_id": 8,
+      "source_chunk_ids": [
+        688,
+        684,
+        687,
+        682,
+        681
+      ],
+      "difficulty": "medium",
+      "question_text": "Which of the following is a function of the Oficina Tarija, a secondary base located in La Paz?",
+      "choices": {
+        "A": "Serves as a PAMC Headquarters",
+        "B": "Field office for Bolivian altiplano operations",
+        "C": "Logistics-only annex for southern operations",
+        "D": "Asset's primary operational base"
+      },
+      "correct_answer": "B",
+      "explanation": "The Oficina Tarija serves as a field office for Bolivian altiplano operations, as stated in §8.2 Secondary Bases.",
+      "source_quote": "Field office, Bolivian altiplano operations",
+      "user_answer": "B",
+      "is_correct": true
+    },
+    {
+      "id": 62,
+      "section_id": 9,
+      "source_chunk_ids": [
+        700,
+        698,
+        693,
+        699,
+        697,
+        684,
+        674
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the primary purpose of the asset's micro-cache network?",
+      "choices": {
+        "A": "To store and maintain a variety of supplies and equipment for the asset's operations.",
+        "B": "To serve as a backup power source for the asset's systems.",
+        "C": "To provide a secure location for the asset to store sensitive information.",
+        "D": "To facilitate the asset's ability to engage in combat operations."
+      },
+      "correct_answer": "A",
+      "explanation": "The micro-cache network is described as a network of 19 micro-caches distributed across the Andean cordillera, containing standard cache contents such as Tungsten throwing batons, Calexin-7 doses, and Bofedal-3 electrolyte concentrate. This suggests that the primary purpose of the network is to store and maintain supplies and equipment for the asset's operations.",
+      "source_quote": "The asset maintains a network of 19 micro-caches distributed across the Andean cordillera:",
+      "user_answer": "A",
+      "is_correct": true
+    },
+    {
+      "id": 63,
+      "section_id": 9,
+      "source_chunk_ids": [
+        700,
+        698,
+        693,
+        699,
+        697,
+        684,
+        674
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the approximate number of Calexin-7 doses stored in a micro-cache?",
+      "choices": {
+        "A": "6 blisters (12 doses)",
+        "B": "4 blisters (8 doses)",
+        "C": "8 blisters (16 doses)",
+        "D": "10 blisters (20 doses)"
+      },
+      "correct_answer": "B",
+      "explanation": "According to the PAMC Logistics Form MC-04, the standard cache contents include 4 blisters (8 doses) of Calexin-7 for each micro-cache.",
+      "source_quote": "Standard cache contents (PAMC Logistics Form MC-04): Item Quantity Tungsten throwing batons (replacement) 2 Calexin-7 dose 4 blisters (8 doses)",
+      "user_answer": "B",
+      "is_correct": true
+    },
+    {
+      "id": 64,
+      "section_id": 9,
+      "source_chunk_ids": [
+        697,
+        699,
+        698,
+        689,
+        694,
+        624,
+        684
+      ],
+      "difficulty": "medium",
+      "question_text": "What was the primary purpose of the asset's deployment during Case 2021-0091?",
+      "choices": {
+        "A": "To test the asset's Inertial Suspension ability",
+        "B": "To deploy the newly emerged Drift Read ability for the first time",
+        "C": "To conduct a routine cache audit",
+        "D": "To engage in a joint operation with EUMR operatives"
+      },
+      "correct_answer": "B",
+      "explanation": "The asset detected and interdicted three incoming small-arms rounds during a 36-hour engagement window, formally adding Drift Read to the asset's capability registry on 30 September 2021.",
+      "source_quote": "The asset detected and interdicted three incoming small-arms rounds across a 36-hour engagement window.",
+      "user_answer": "B",
+      "is_correct": true
+    },
+    {
+      "id": 65,
+      "section_id": 9,
+      "source_chunk_ids": [
+        694,
+        700,
+        701,
+        691,
+        693,
+        624,
+        674
+      ],
+      "difficulty": "medium",
+      "question_text": "What was the outcome of the second Echo Lock event during the engagement in Salta Province, Argentina?",
+      "choices": {
+        "A": "Successful",
+        "B": "Pyrrhic",
+        "C": "Catastrophic",
+        "D": "Partial"
+      },
+      "correct_answer": "C",
+      "explanation": "The Salta engagement against Quebrantadero / Wilma Sandoval-Iqui produced significant civilian casualties and is classified Catastrophic.",
+      "source_quote": "The Salta engagement against Quebrantadero / Wilma Sandoval-Iqui produced significant civilian casualties (11 confirmed) and is classified Catastrophic.",
+      "user_answer": "C",
+      "is_correct": true
+    },
+    {
+      "id": 66,
+      "section_id": 9,
+      "source_chunk_ids": [
+        690,
+        696,
+        698,
+        692,
+        699,
+        684,
+        621
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the standard quantity of Calexin-7 doses stored in the micro-caches?",
+      "choices": {
+        "A": "2 doses",
+        "B": "4 blisters (8 doses)",
+        "C": "16 doses",
+        "D": "32 doses"
+      },
+      "correct_answer": "B",
+      "explanation": "According to §8.4, the standard cache contents include 4 blisters (8 doses) of Calexin-7.",
+      "source_quote": "Standard cache contents (PAMC Logistics Form MC-04):\nItem\nQuantity\nTungsten throwing batons (replacement)\n2\nCalexin-7 dose\n4 blisters (8 doses)",
+      "user_answer": "B",
+      "is_correct": true
+    }
+  ]
+}

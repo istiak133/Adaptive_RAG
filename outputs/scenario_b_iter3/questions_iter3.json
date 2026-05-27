@@ -1,0 +1,134 @@
+{
+  "session_id": 19,
+  "sections_studied": [
+    8
+  ],
+  "is_cold_start": false,
+  "score_pct": 20.0,
+  "exported_at": "2026-05-26T14:41:38.741161+00:00",
+  "questions": [
+    {
+      "id": 67,
+      "section_id": 8,
+      "source_chunk_ids": [
+        684,
+        686,
+        683,
+        681,
+        687,
+        658
+      ],
+      "difficulty": "medium",
+      "question_text": "How many packets of Bofedal-3 electrolyte concentrate are stored in each standard cache?",
+      "choices": {
+        "A": "2 packets",
+        "B": "4 packets",
+        "C": "6 packets",
+        "D": "8 packets"
+      },
+      "correct_answer": "B",
+      "explanation": "The standard cache contents (PAMC Logistics Form MC-04) specify that each cache contains 4 packets of Bofedal-3 electrolyte concentrate.",
+      "source_quote": "Standard cache contents (PAMC Logistics Form MC-04): Bofedal-3 electrolyte concentrate 4 packets",
+      "user_answer": "A",
+      "is_correct": false
+    },
+    {
+      "id": 68,
+      "section_id": 8,
+      "source_chunk_ids": [
+        688,
+        684,
+        687,
+        682,
+        681
+      ],
+      "difficulty": "medium",
+      "question_text": "Which of the following is a function of the Cell Cóndor, a primary operator for Argentina?",
+      "choices": {
+        "A": "Providing logistical support for operations",
+        "B": "Coordinating entry and exit points for asset operations",
+        "C": "Conducting surveillance in the Andean cordillera",
+        "D": "Maintaining a network of micro-caches"
+      },
+      "correct_answer": "B",
+      "explanation": "The Cell Cóndor is responsible for coordinating entry for asset operations, as stated in Section 8.8 Territorial Agreements with Allied Operators.",
+      "source_quote": "Cell Cóndor (Mendoza-based) — primary operator for Argentine Mendoza and Neuquén; SLATEFALL coordinates entry",
+      "user_answer": "A",
+      "is_correct": false
+    },
+    {
+      "id": 69,
+      "section_id": 8,
+      "source_chunk_ids": [
+        686,
+        688,
+        682,
+        685,
+        684
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the reason for the Cerro Castillo exclusion ring?",
+      "choices": {
+        "A": "Strategic; ongoing classified PAMC investigation",
+        "B": "Psychological; CBMP recommendation since 2020",
+        "C": "Jurisdictional; pending bilateral agreement",
+        "D": "Limited access, prior coordination required"
+      },
+      "correct_answer": "B",
+      "explanation": "The Cerro Castillo exclusion ring is a restricted zone due to its psychological nature, as it is the site of a 2018 incident.",
+      "source_quote": "Psychological; CBMP recommendation since 2020",
+      "user_answer": "B",
+      "is_correct": true
+    },
+    {
+      "id": 70,
+      "section_id": 8,
+      "source_chunk_ids": [
+        681,
+        688,
+        687,
+        682,
+        683,
+        658
+      ],
+      "difficulty": "medium",
+      "question_text": "What is the purpose of Cuartel Valparaíso's subsurface levels?",
+      "choices": {
+        "A": "Storage and office space",
+        "B": "Storage and CBMP regional micro-lab",
+        "C": "Dormitory and recreational facilities",
+        "D": "Vehicle parking and equipment storage"
+      },
+      "correct_answer": "B",
+      "explanation": "The facility has 2 subsurface levels, one for storage and the other for the CBMP regional micro-lab.",
+      "source_quote": "The facility is hardened against EMP exposure and EM eavesdropping. Cuartel Valparaíso houses Cell Halcón's principal quarters, the asset's personal residence wing (44 m² apartment, Block C), and the regional CBMP medical office.",
+      "user_answer": "D",
+      "is_correct": false
+    },
+    {
+      "id": 71,
+      "section_id": 8,
+      "source_chunk_ids": [
+        681,
+        688,
+        687,
+        684,
+        683,
+        658
+      ],
+      "difficulty": "medium",
+      "question_text": "Which of the following is associated with the Operative MIRADOR, a senior PAMC operative?",
+      "choices": {
+        "A": "A formal coordination agreement with Cell Cóndor",
+        "B": "A bilateral cooperation framework with the Bolivian SOE",
+        "C": "A direct operational relationship with the Peruvian DAM",
+        "D": "The asset's former trainer"
+      },
+      "correct_answer": "D",
+      "explanation": "The Operative MIRADOR is described as the asset's former trainer, indicating a close professional relationship.",
+      "source_quote": "Operative MIRADOR (Atacama) — senior PAMC operative, the asset's former trainer",
+      "user_answer": "C",
+      "is_correct": false
+    }
+  ]
+}
