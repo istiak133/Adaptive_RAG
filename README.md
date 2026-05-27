@@ -48,7 +48,7 @@ questions from past sessions are hard-rejected at validation time.
   deliverables without running the LLM yourself.
 
 
-## Run it in 5 minutes
+## To Run
 
 You need:
 
@@ -57,11 +57,7 @@ You need:
   takes about a minute each at https://console.groq.com and
   https://aistudio.google.com/apikey.
 
-> **Reviewer shortcut**: contact me through the submission form and I
-> will send pre-provisioned working keys directly. They cover the entire
-> review window and rotate immediately after. Committing keys to a
-> public repo is an anti-pattern, so they are shared out of band rather
-> than in `.env.example`.
+
 
 ### Option 1 — Docker (recommended)
 
