@@ -35,7 +35,7 @@ what most of the moving parts in this repo exist to enable.
 9. [Configuration](#configuration)
 10. [Output file schemas](#output-file-schemas)
 11. [Assessment criteria coverage](#assessment-criteria-coverage)
-12. [Limitations and honest gotchas](#limitations-and-honest-gotchas)
+12. [Limitations and assumptions](#limitations-and-assumptions)
 13. [Project layout](#project-layout)
 14. [API endpoint reference](#api-endpoint-reference)
 
@@ -73,8 +73,8 @@ A two-minute summary if you're triaging submissions:
 Prerequisites:
 
 - Python 3.9+, or just Docker if you'd rather not deal with Python
-- A PostgreSQL instance — any will do. I used Supabase's free tier
-  during development; the Docker path below bundles one for you.
+- A PostgreSQL instance — any will do. Supabase's free tier was used
+  during development; the Docker path below bundles one automatically.
 - Free API keys (see [API keys](#a-note-on-api-keys) below):
   - **Groq** — primary LLM. https://console.groq.com (sign up + create
     key in under a minute)
@@ -82,20 +82,26 @@ Prerequisites:
 
 ### A note on API keys
 
-Both providers are genuine free tier. No payment method required, no
-trial that expires. The brief explicitly disallows paid services, so I
-stuck to options that stay free.
+> **Reviewer shortcut — skip provisioning your own keys:** if you'd
+> rather not spend a minute on Groq + Gemini signup, contact me at the
+> address on the submission form and I will send pre-provisioned
+> working keys directly. They are valid throughout the review window
+> and will be rotated immediately after it closes. Committed secrets
+> are an anti-pattern on a public repository, so the keys are shared
+> out of band rather than in `.env.example`.
+
+Both providers are genuine free tier. No payment method is required
+and no trial expires. The assessment brief disallows paid services, so
+the project uses options that stay free indefinitely.
 
 Only one of the two keys is strictly required. If you supply only
-`GROQ_API_KEY`, the fallback chain is built without Gemini — you'll see
-one warning line at startup and everything else runs normally. Supplying
-both is recommended though; if Groq rate-limits you mid-run, the
-LangChain fallback transparently routes the next call to Gemini and the
-prep flow doesn't notice.
+`GROQ_API_KEY`, the fallback chain is built without Gemini — you will
+see one warning line at startup and the system runs normally on Groq
+alone. Supplying both is recommended, though: if Groq rate-limits a
+call mid-run, the LangChain fallback transparently routes it to Gemini
+and the prep flow continues without interruption.
 
-The keys live in `.env` (gitignored). If you'd rather not provision
-your own, reach out and I'll share working keys out of band; they'll
-be rotated after the review window closes.
+The keys live in `.env`, which is gitignored.
 
 ### Option A — Docker (one command after `.env`)
 
@@ -103,7 +109,7 @@ If you have Docker Desktop installed, this is the fastest path.
 
 ```bash
 git clone https://github.com/istiak133/Adaptive_RAG
-cd cloudly-intern
+cd Adaptive_RAG
 
 cp .env.example .env
 # Open .env, paste your GROQ_API_KEY and GOOGLE_API_KEY.
@@ -123,7 +129,7 @@ inspect generated files without entering the container.
 
 ```bash
 git clone https://github.com/istiak133/Adaptive_RAG
-cd cloudly-intern
+cd Adaptive_RAG
 
 python -m venv .venv
 source .venv/bin/activate
@@ -131,7 +137,7 @@ pip install -r requirements.txt
 
 cp .env.example .env
 # Open .env, paste your Groq and Gemini keys, and set DATABASE_URL to
-# your own Postgres (Supabase free tier works great for this).
+# your own Postgres (Supabase free tier is a good fit).
 ```
 
 A Supabase pooled connection string looks like:
@@ -140,8 +146,9 @@ A Supabase pooled connection string looks like:
 postgresql://postgres.xxxxx:[PASSWORD]@aws-0-region.pooler.supabase.com:5432/postgres
 ```
 
-Heads-up: if your password contains `@`, `%`, or `&`, URL-encode them
-(`%` → `%25`, `&` → `%26`). This caught me out on day one.
+Important: if your password contains `@`, `%`, or `&`, URL-encode them
+(`%` → `%25`, `&` → `%26`). SQLAlchemy will otherwise fail to parse
+the connection string.
 
 Now create the schema and ingest the PDF:
 
@@ -168,8 +175,8 @@ You should see:
   Alembic version          46105259c147
 ```
 
-Clone, install, configure, ingest, verify — all under nine minutes on a
-fresh machine for me.
+Clone, install, configure, ingest, verify — the full setup completes
+in under nine minutes on a fresh machine.
 
 
 ## Running the evaluation scenarios
@@ -354,10 +361,11 @@ The two conditional edges are:
   hit the requested MCQ count this pass. The retry is bounded by
   `llm.max_retries` in `config.yaml` (default 3).
 
-I considered keeping the prep flow as a plain Python function — it's
-only eight steps. The branches and the retry loop are easier to read
-and reason about as a graph, though, and being able to dump a Mermaid
-diagram of the compiled state machine has been useful for verification.
+The prep flow could be implemented as a plain Python function — it is
+only eight steps — but the conditional branches and the retry loop
+are easier to read and reason about as a graph. The compiled state
+machine also exposes a Mermaid diagram via `.get_graph()`, which has
+proved useful for verification.
 
 
 ## The adaptive loop, end-to-end
@@ -480,17 +488,19 @@ that adaptive prompting is grounded in real data, from one file.
 
 ### Backend: FastAPI
 
-REST is required by the brief, and FastAPI gives auto-generated OpenAPI
-docs at `/docs`, native Pydantic request validation, and Pydantic models
-that double as the LLM's structured output schema. Flask would have
-worked, but I'd be writing the OpenAPI spec by hand and re-validating
-data three times.
+REST is required by the brief, and FastAPI provides auto-generated
+OpenAPI docs at `/docs`, native Pydantic request validation, and
+Pydantic models that double as the LLM's structured output schema.
+Flask would have worked but would require the OpenAPI spec to be
+written by hand and the request body to be re-validated at multiple
+layers.
 
 ### Primary LLM: Groq (LLaMA 3.1 8B Instant). Fallback: Gemini 2.0 Flash
 
-Groq's free tier is the fastest free inference I'm aware of — around
-750 tokens/sec on this model, 14,400 requests per day, 6,000 tokens per
-minute. Scenario B uses about 30 LLM calls, so headroom is fine.
+Groq's free tier offers the fastest free inference currently available
+for this model — approximately 750 tokens/sec, with limits of 14,400
+requests per day and 6,000 tokens per minute. Scenario B requires
+about 30 LLM calls, leaving comfortable headroom.
 
 Gemini Flash is the fallback because its rate-limit pool is independent.
 If Groq 429s, LangChain's `with_fallbacks` routes the call to Gemini
@@ -519,11 +529,11 @@ The 11 KB tables benefit from real foreign keys, native JSONB columns
 `token_usage`), and proper indexes. SQLite can do most of this, but its
 JSON ergonomics are weaker and concurrent writes are limited.
 
-ChromaDB sits alongside in local persistent mode. It's purpose-built
+ChromaDB sits alongside in local persistent mode. It is purpose-built
 for vector similarity search and supports metadata-based filtering to
 constrain a search to specific section IDs
-(`where={"section_id": {"$in": [5, 8]}}`). pgvector would let me
-consolidate into one database; keeping them split makes the role of
+(`where={"section_id": {"$in": [5, 8]}}`). pgvector would consolidate
+both stores into one database; keeping them split makes the role of
 each clearer in the code, and swapping pgvector in later would only
 touch one repository class.
 
@@ -548,8 +558,8 @@ SLATEFALL convention). It also handles three-level sub-sections like
 
 ### Chunking strategy: structure-first, with size guards
 
-The dossier's author already chunked the content for me by writing it
-as sub-sections. So the primary strategy is one chunk per sub-section.
+The dossier's author already chunked the content by writing it as
+sub-sections, so the primary strategy is one chunk per sub-section.
 On top of that:
 
 - Sub-sections below 100 tokens are merged with a neighbour. Otherwise
@@ -561,10 +571,11 @@ On top of that:
   becomes its own short chunk. Without this, every "what is X?" query
   would surface the entire glossary as a single noisy result.
 
-The recursive-character splitter is the standard 2026 best-practice for
-prose chunking (highest accuracy in recent benchmarks). I'm using it
-only as a fallback for oversized sub-sections, because the document's
-existing structure is more reliable than any generic splitter.
+The recursive-character splitter is the standard 2026 best-practice
+for prose chunking (highest accuracy in recent benchmarks). It is
+applied only as a fallback for oversized sub-sections, since the
+document's existing structure is more reliable than any generic
+splitter.
 
 ### Embeddings: sentence-transformers `all-MiniLM-L6-v2`
 
@@ -606,8 +617,8 @@ Two parameters that matter for the assessment:
 - `llm.inter_call_delay_seconds: 3.0` — paces calls so Scenario B
   doesn't trip the 6,000 TPM limit. Raise this if you hit 429s.
 - `retrieval.vector_top_k: 5` — number of chunks fed to the LLM per
-  call. I dropped this from 10 to 5 because at 10 the prompt regularly
-  pushed Groq above the 6,000 TPM ceiling.
+  call. Reduced from 10 to 5 after observing that the larger value
+  regularly pushed the prompt above Groq's 6,000 TPM ceiling.
 
 
 ## Output file schemas
@@ -724,7 +735,7 @@ The five "Important Notes" from the brief are addressed as follows:
    flow in one command. REST exists alongside but isn't required.
 
 
-## Limitations and honest gotchas
+## Limitations and assumptions
 
 - **PDF layout assumption.** Section and sub-section detection is
   regex-driven (`^Section N.` / `^N.M Title`). Works for SLATEFALL,
