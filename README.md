@@ -16,7 +16,7 @@ questions from past sessions are hard-rejected at validation time.
 ## Table of contents
 
 1. [What you get](#what-you-get)
-2. [Run it in 5 minutes](#run-it-in-5-minutes)
+2. [To Run](#to-run)
 3. [Scenario B — the main evaluation flow](#scenario-b--the-main-evaluation-flow)
 4. [Scenario A and other commands](#scenario-a-and-other-commands)
 5. [REST API](#rest-api)
