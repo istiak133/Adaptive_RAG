@@ -35,10 +35,28 @@ Prerequisites:
 - Python 3.9+ (or just Docker, if you'd rather not deal with Python)
 - A PostgreSQL instance — any will do. I used Supabase's free tier during
   development; the Docker path below spins up a local Postgres for you.
-- Free API keys:
-  - **Groq**: `https://console.groq.com` (sign up, create API key — under
-    a minute)
-  - **Google Gemini**: `https://aistudio.google.com/apikey` (about the same)
+- Free API keys (see the **API keys** note below for the details):
+  - **Groq** — primary LLM. `https://console.groq.com` (sign up, create
+    API key — under a minute)
+  - **Google Gemini** — fallback LLM. `https://aistudio.google.com/apikey`
+    (about the same)
+
+### A note on API keys
+
+Both providers are free tier — no payment method required, no trial that
+expires. Per the brief: paid services are explicitly disallowed, so I
+stuck to genuinely free options.
+
+You only strictly need one of the two keys to run the system. If you
+supply only `GROQ_API_KEY`, the fallback chain is built without Gemini
+(you'll see a single warning line at startup, then everything works
+normally on Groq alone). Supplying both is recommended though — if Groq
+rate-limits you mid-run, LangChain transparently routes the next call
+to Gemini and the prep flow keeps going.
+
+The keys live in `.env` (gitignored). If you'd rather not provision your
+own, contact me and I'll share working keys out of band; they'll be
+rotated after the review window closes.
 
 ### Option A — Docker (single command, ~5 min)
 
