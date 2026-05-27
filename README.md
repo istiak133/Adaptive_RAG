@@ -112,7 +112,7 @@ inspect generated files without entering the container.
 ### Option B — Local Python (no Docker)
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/istiak133/Adaptive_RAG
 cd cloudly-intern
 
 python -m venv .venv
