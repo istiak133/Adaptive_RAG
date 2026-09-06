@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adaptive Document Preparation System — Carousel</title>
+  <style>
+    :root{
+      --ink:#16181d; --muted:#5b6470; --faint:#8a929c; --line:#2b2f36; --hair:#d4d8de;
+      --pg-bg:#fbf4e8; --pg-bd:#d8b87c; --ch-bg:#eaf2fc; --ch-bd:#9cc0ec; --acc:#6d28d9;
+    }
+    *{ box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    html,body{ margin:0; padding:0; background:#9aa0a6; }
+    body{ font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); }
+
+    .slide{
+      width:1080px; height:1350px; background:#fff; margin:0 auto;
+      padding:72px 76px; position:relative; overflow:hidden;
+      display:flex; flex-direction:column;
+    }
+    @media screen{ .slide{ margin:22px auto; box-shadow:0 14px 50px rgba(0,0,0,.35); } }
+    @media print{
+      @page{ size:1080px 1350px; margin:0; }
+      html,body{ background:#fff; }
+      .slide{ margin:0; box-shadow:none; page-break-after:always; }
+    }
+
+    .kicker{ font-size:19px; font-weight:800; letter-spacing:2.5px; color:var(--acc); margin:0 0 14px; }
+    h1{ font-size:62px; line-height:1.05; font-weight:800; letter-spacing:-1px; margin:0 0 18px; }
+    h2{ font-size:46px; line-height:1.08; font-weight:800; letter-spacing:-.6px; margin:0 0 8px; }
+    .lead{ font-size:27px; line-height:1.4; color:var(--muted); margin:0 0 30px; }
+    .pagenum{ position:absolute; top:64px; right:76px; font-size:20px; font-weight:800; color:var(--faint); }
+    .foot{ margin-top:auto; display:flex; justify-content:space-between; align-items:flex-end; }
+    .foot .swipe{ font-size:22px; font-weight:800; color:var(--acc); }
+    .foot .brand{ font-size:19px; color:var(--faint); }
+    .chips span{ display:inline-block; background:#f3f0ff; color:var(--acc); border-radius:999px;
+                 padding:7px 16px; font-size:20px; font-weight:700; margin:6px 8px 0 0; }
+
+    /* shared building blocks (scaled up for mobile legibility) */
+    .row{ display:flex; gap:22px; }
+    .store{ flex:1; border-radius:16px; padding:26px 28px; }
+    .store.pg{ background:var(--pg-bg); border:2.5px solid var(--pg-bd); }
+    .store.ch{ background:var(--ch-bg); border:2.5px solid var(--ch-bd); }
+    .store h3{ margin:0 0 4px; font-size:34px; font-weight:800; }
+    .store .tag{ font-size:20px; color:var(--muted); margin:0 0 16px; }
+    .grp{ margin:14px 0 0; }
+    .grp b{ font-size:18px; letter-spacing:.5px; color:var(--ink); }
+    .grp .t{ font-size:21px; color:#37404b; line-height:1.5; margin-top:2px; }
+    .mono{ font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace; }
+    .bridge{ text-align:center; margin:30px 0 0; }
+    .bridge .chip{ display:inline-block; border:2.5px dashed var(--line); border-radius:999px;
+                   padding:16px 28px; font-size:24px; font-weight:800; }
+    .note{ font-size:22px; line-height:1.5; color:#37404b; margin:28px 0 0;
+           border-left:5px solid var(--acc); padding-left:18px; }
+    .note b{ color:var(--ink); }
+
+    .lane{ flex:1; border:2.5px solid var(--hair); border-radius:16px; padding:24px 26px; }
+    .lane.content{ border-color:var(--ch-bd); }
+    .lane.history{ border-color:var(--pg-bd); }
+    .lane .lh{ font-size:27px; font-weight:800; margin:0 0 4px; }
+    .lane .ls{ font-size:19px; color:var(--muted); margin:0 0 16px; }
+    .flow{ list-style:none; margin:0; padding:0; }
+    .flow li{ position:relative; padding:9px 0 9px 28px; font-size:21px; color:#2d353f; line-height:1.4; }
+    .flow li::before{ content:"▸"; position:absolute; left:0; top:9px; color:var(--faint); }
+    .flow li b{ color:var(--ink); }
+    .pill{ border:2.5px solid var(--line); border-radius:14px; padding:22px 26px; font-size:23px; line-height:1.45; }
+    .pill b{ font-weight:800; }
+    .pill .mut{ color:var(--muted); }
+
+    .guard{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    .g{ border:2.5px solid var(--hair); border-radius:14px; padding:20px 22px; }
+    .g .gn{ font-size:17px; color:var(--faint); font-weight:800; letter-spacing:1px; }
+    .g h5{ margin:4px 0 4px; font-size:27px; font-weight:800; }
+    .g p{ margin:0; font-size:20px; color:var(--muted); line-height:1.4; }
+
+    .steps{ display:flex; flex-direction:column; gap:14px; }
+    .stepbox{ border:2.5px solid var(--hair); border-radius:14px; padding:18px 22px; display:flex; gap:18px; align-items:center; }
+    .stepbox .num{ width:46px; height:46px; flex:none; border-radius:50%; background:var(--ink); color:#fff;
+                   font-size:24px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+    .stepbox .tx b{ font-size:25px; }
+    .stepbox .tx .d{ font-size:19px; color:var(--muted); }
+
+    .loopbar{ border:3px dashed var(--acc); border-radius:18px; padding:26px 30px; margin:26px 0 0;
+              color:var(--acc); font-size:25px; font-weight:800; line-height:1.4; }
+    .loopbar .ar{ font-size:40px; }
+
+    .mem{ display:flex; gap:22px; margin-top:24px; }
+    .mem div{ flex:1; border:2.5px solid var(--hair); border-radius:14px; padding:22px 24px; font-size:22px; line-height:1.45; }
+    .mem div b{ font-size:25px; }
+
+    .hard span{ display:inline-block; border:2.5px solid var(--hair); border-radius:12px;
+                padding:14px 20px; font-size:22px; margin:0 12px 14px 0; }
+    .hard span b{ font-weight:800; }
+  </style>
+</head>
+<body>
+
+  <!-- ============ SLIDE 1 — COVER ============ -->
+  <section class="slide">
+    <p class="kicker">RAG · ADAPTIVE LEARNING · LLM SYSTEMS</p>
+    <h1>Adaptive Document<br>Preparation System</h1>
+    <p class="lead">A quiz engine that reads a document, tests you, and gets smarter from every mistake you make.</p>
+    <p style="margin:-16px 0 26px; font-size:21px; color:var(--faint); font-weight:600; letter-spacing:.3px;">10 sections · 133 sub-sections · 195 chunks · 69 topics · 4-layer validation</p>
+
+    <div class="steps">
+      <div class="stepbox"><div class="num">1</div><div class="tx"><b>Pick topics</b> &nbsp;<span class="d">— you choose which sections to study</span></div></div>
+      <div class="stepbox"><div class="num">2</div><div class="tx"><b>Find material</b> &nbsp;<span class="d">— search the knowledge base + recall your weak spots</span></div></div>
+      <div class="stepbox"><div class="num">3</div><div class="tx"><b>Write questions</b> &nbsp;<span class="d">— AI drafts MCQs (Groq → Gemini)</span></div></div>
+      <div class="stepbox"><div class="num">4</div><div class="tx"><b>Fact-check</b> &nbsp;<span class="d">— reject anything not in the document</span></div></div>
+      <div class="stepbox"><div class="num">5</div><div class="tx"><b>Score &amp; learn</b> &nbsp;<span class="d">— grade you, remember what you missed ↺</span></div></div>
+    </div>
+
+    <div class="foot">
+      <div class="chips"><span>Python</span><span>LangGraph</span><span>PostgreSQL</span><span>ChromaDB</span><span>FastAPI</span><span>Docker</span></div>
+      <div class="swipe">swipe →</div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 2 — STORAGE ============ -->
+  <section class="slide">
+    <span class="pagenum">2 / 6</span>
+    <p class="kicker">UNDER THE HOOD · 1</p>
+    <h2>Two storage engines —<br>and why</h2>
+    <p class="lead">Each store answers a different question. Mixing them into one would do both jobs badly.</p>
+
+    <div class="row">
+      <div class="store pg">
+        <h3>PostgreSQL</h3>
+        <p class="tag">relational source of truth — 11 tables, 4 layers</p>
+        <div class="grp"><b>STRUCTURE</b><div class="t mono">sections · chunks</div></div>
+        <div class="grp"><b>TOPIC GRAPH</b><div class="t mono">topics · section_topics · chunk_topics · question_topics</div></div>
+        <div class="grp"><b>SESSIONS</b><div class="t mono">sessions · questions · answers</div></div>
+        <div class="grp"><b>MASTERY = MEMORY</b><div class="t mono">topic_mastery · section_topic_mastery</div></div>
+      </div>
+      <div class="store ch">
+        <h3>ChromaDB</h3>
+        <p class="tag">vector index — semantic ranking only</p>
+        <div class="grp"><div class="t">195 chunk embeddings, <b>384-dim</b> (MiniLM)</div></div>
+        <div class="grp"><div class="t"><b>HNSW</b> index · <b>cosine</b> similarity</div></div>
+        <div class="grp"><div class="t">metadata for filtering:<br><span class="mono">section_id · chunk_kind · pages</span></div></div>
+        <div class="grp"><div class="t" style="color:var(--muted)">No business logic — it only knows what text is <i>relevant</i>.</div></div>
+      </div>
+    </div>
+
+    <div class="bridge"><span class="chip">🔑 <span class="mono">sub_section_id</span> — same key in BOTH stores</span></div>
+    <p class="note"><b>FK policy:</b> CASCADE almost everywhere, but <b>RESTRICT</b> on <span class="mono">questions.section_id</span> — you can't delete a section while history still points to it.</p>
+    <div class="foot"><div class="brand">Istiak Ahmed · Adaptive RAG</div><div class="swipe">swipe →</div></div>
+  </section>
+
+  <!-- ============ SLIDE 3 — DUAL RETRIEVAL ============ -->
+  <section class="slide">
+    <span class="pagenum">3 / 6</span>
+    <p class="kicker">UNDER THE HOOD · 2</p>
+    <h2>Dual retrieval:<br>relevant × personal</h2>
+    <p class="lead">Two lanes run in parallel, then fuse into one prompt.</p>
+
+    <div class="row">
+      <div class="lane content">
+        <p class="lh">CONTENT</p>
+        <p class="ls">“what is there to ask about?” · reads Chroma → Postgres</p>
+        <ul class="flow">
+          <li>embed query → <b>ChromaDB HNSW</b> search</li>
+          <li>filter by section, drop glossary noise</li>
+          <li>top-k ids → fetch rows from <b>Postgres</b>, <b>keep Chroma's ranking</b></li>
+          <li>resolve §X.Y cross-references (depth 1)</li>
+          <li>token-budget filter</li>
+        </ul>
+      </div>
+      <div class="lane history">
+        <p class="lh">HISTORY</p>
+        <p class="ls">“what is this user weak at?” · reads Postgres mastery</p>
+        <ul class="flow">
+          <li>read <b>mastery tables</b> + topic depth</li>
+          <li><b>Allocator</b>: weight = <span class="mono">global × section × depth</span></li>
+          <li>→ per-topic seeds (weakest get more)</li>
+          <li>build <b>WEAK / MASTERED</b> summary</li>
+          <li>token-budgeted (3-level compression)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pill" style="margin-top:24px"><b>→ Prompt assembly (LangChain):</b> <span class="mut">relevant chunks + weak-spot seeds + WEAK/MASTERED summary + JSON schema</span></div>
+    <p class="note"><b>Why two?</b> A vector DB can't tell you which topic a user keeps failing; relational tables can't do fuzzy semantic search. One finds <i>relevant</i> material, the other makes it <i>personal</i>.</p>
+    <div class="foot"><div class="brand">Istiak Ahmed · Adaptive RAG</div><div class="swipe">swipe →</div></div>
+  </section>
+
+  <!-- ============ SLIDE 4 — GENERATE + VALIDATE ============ -->
+  <section class="slide">
+    <span class="pagenum">4 / 6</span>
+    <p class="kicker">UNDER THE HOOD · 3</p>
+    <h2>Generate, then<br>guard the output</h2>
+    <p class="lead">An LLM call is cheap; trusting it blindly is expensive. Every question runs a gauntlet.</p>
+
+    <div class="pill" style="margin-bottom:24px"><b>LLM gateway:</b> <span class="mut">Groq (primary) → Gemini (fallback) via <span class="mono">.with_fallbacks()</span>. One API failure never breaks a session. TPM pacing between calls.</span></div>
+
+    <div class="guard">
+      <div class="g"><div class="gn">LAYER 1</div><h5>Schema</h5><p>Pydantic + JSON parser — strips fences, validates shape</p></div>
+      <div class="g"><div class="gn">LAYER 2</div><h5>Unique choices</h5><p>4 distinct options, no repeats</p></div>
+      <div class="g"><div class="gn">LAYER 3</div><h5>Hallucination</h5><p>the cited <span class="mono">source_quote</span> must fuzzy-match the retrieved text — else reject</p></div>
+      <div class="g"><div class="gn">LAYER 4</div><h5>Near-duplicate</h5><p>SequenceMatcher ≥ 0.65 vs recent questions</p></div>
+    </div>
+
+    <p class="note"><b>Self-healing:</b> if validation drops questions below target, the LangGraph loop runs <span class="mono">validate → generate</span> again (bounded).</p>
+    <div class="foot"><div class="brand">Istiak Ahmed · Adaptive RAG</div><div class="swipe">swipe →</div></div>
+  </section>
+
+  <!-- ============ SLIDE 5 — ADAPTIVE LOOP / MEMORY ============ -->
+  <section class="slide">
+    <span class="pagenum">5 / 6</span>
+    <p class="kicker">THE HEART OF IT</p>
+    <h2>Closing the<br>adaptive loop</h2>
+    <p class="lead">This is what makes it “adaptive” and not just a quiz generator.</p>
+
+    <div class="steps">
+      <div class="stepbox"><div class="num" style="background:var(--acc)">↻</div><div class="tx"><b>Every answer updates a mastery weight</b> <span class="d">— wrong raises it, a winning streak decays it (mastered)</span></div></div>
+      <div class="stepbox"><div class="num" style="background:var(--acc)">↑</div><div class="tx"><b>Regression guard</b> <span class="d">— a mastered topic answered wrong is un-mastered &amp; bumped back up</span></div></div>
+      <div class="stepbox"><div class="num" style="background:var(--acc)">→</div><div class="tx"><b>Next session reads the new weights</b> <span class="d">— so retrieval &amp; questions shift toward your weak spots</span></div></div>
+    </div>
+
+    <div class="loopbar"><span class="ar">↺</span> &nbsp; mistake → weight → smarter next question. The memory is <b>persisted in PostgreSQL</b>, not held in RAM.</div>
+
+    <div class="mem">
+      <div><b>PrepState</b> (TypedDict)<br><span style="color:var(--muted)">in-run working memory — one session</span></div>
+      <div><b>PostgreSQL</b><br><span style="color:var(--muted)">long-term memory — across all sessions</span></div>
+    </div>
+    <div class="foot"><div class="brand">Istiak Ahmed · Adaptive RAG</div><div class="swipe">swipe →</div></div>
+  </section>
+
+  <!-- ============ SLIDE 6 — RECAP / CTA ============ -->
+  <section class="slide">
+    <span class="pagenum">6 / 6</span>
+    <p class="kicker">WHAT I LEARNED</p>
+    <h2>The hard parts<br>were the point</h2>
+    <p class="lead">Building something that <i>works once</i> is an afternoon. Building something that <i>adapts</i> is a different discipline.</p>
+
+    <div class="hard">
+      <span><b>Hard:</b> dual-store consistency via a shared key</span>
+      <span><b>Hard:</b> rank-preserving re-order across stores</span>
+      <span><b>Hard:</b> cross-reference graph walk</span>
+      <span><b>Hard:</b> proportional allocation with per-topic guarantees</span>
+      <span><b>Hard:</b> regression detection on mastered topics</span>
+      <span><b>Hard:</b> token-budgeted history with graceful compression</span>
+      <span><b>Hard:</b> grounding every question in the source text</span>
+    </div>
+
+    <div style="margin-top:30px">
+      <div class="chips"><span>Python</span><span>LangChain</span><span>LangGraph</span><span>PostgreSQL</span><span>ChromaDB</span><span>FastAPI</span><span>Docker</span><span>Groq</span><span>Gemini</span></div>
+    </div>
+
+    <p style="margin-top:34px; color:var(--muted); font-size:25px; line-height:1.4;">Full code, schema &amp; a runnable demo are on GitHub.</p>
+    <p style="margin:8px 0 0; color:var(--ink); font-weight:800; font-size:30px;">🔗 github.com/istiak133/Adaptive_RAG</p>
+
+    <div class="foot"><div class="brand">Istiak Ahmed · Adaptive RAG</div><div class="swipe">↺ thanks for reading</div></div>
+  </section>
+
+</body>
+</html>

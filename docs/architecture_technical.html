@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adaptive Document Preparation System — Engineering Blueprint</title>
+  <style>
+    :root {
+      --ink:#16181d; --muted:#5b6470; --faint:#8a929c;
+      --line:#2b2f36; --hair:#d4d8de;
+      --pg-bg:#fbf4e8; --pg-bd:#d8b87c;     /* PostgreSQL = relational */
+      --ch-bg:#eaf2fc; --ch-bd:#9cc0ec;     /* ChromaDB = vector      */
+      --acc:#6d28d9;                          /* accent = adaptive loop */
+    }
+    * { box-sizing:border-box; }
+    body{
+      margin:0; background:#fff; color:var(--ink);
+      font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      padding:40px 26px 60px; display:flex; flex-direction:column; align-items:center;
+    }
+    .wrap{ max-width:1200px; width:100%; }
+    h1{ font-size:25px; font-weight:800; letter-spacing:-.4px; margin:0; }
+    .sub{ font-size:13.5px; color:var(--muted); margin:6px 0 14px; }
+    .legend{ display:flex; gap:16px; flex-wrap:wrap; font-size:11.5px; color:var(--muted); margin-bottom:22px; }
+    .legend span{ display:inline-flex; align-items:center; gap:6px; }
+    .sw{ width:14px; height:14px; border-radius:3px; display:inline-block; border:1px solid var(--hair); }
+
+    .band{ border:1.4px solid var(--line); border-radius:12px; padding:14px 16px 16px; margin:0; position:relative; }
+    .band-l{ position:absolute; top:-10px; left:14px; background:#fff; padding:0 8px;
+             font-size:11.5px; font-weight:800; letter-spacing:1.2px; color:var(--ink); }
+    .band-note{ font-size:11px; color:var(--faint); margin-top:8px; }
+
+    .down{ height:30px; display:flex; align-items:center; justify-content:center; color:var(--muted); }
+    .down svg{ width:18px; height:30px; }
+
+    .row{ display:flex; gap:12px; flex-wrap:wrap; }
+    .row.even > *{ flex:1; min-width:150px; }
+
+    .card{ border:1.2px solid var(--hair); border-radius:9px; padding:9px 11px; background:#fff; }
+    .card h4{ margin:0 0 3px; font-size:12.5px; font-weight:700; }
+    .card p{ margin:0; font-size:11px; color:var(--muted); line-height:1.45; }
+    .step{ position:relative; }
+    .step .n{ position:absolute; top:-9px; left:-7px; width:19px; height:19px; border-radius:50%;
+              background:var(--ink); color:#fff; font-size:11px; font-weight:700;
+              display:flex; align-items:center; justify-content:center; }
+
+    .store{ border-width:1.5px; border-radius:10px; padding:11px 13px; }
+    .store.pg{ background:var(--pg-bg); border:1.5px solid var(--pg-bd); }
+    .store.ch{ background:var(--ch-bg); border:1.5px solid var(--ch-bd); }
+    .store h3{ margin:0 0 2px; font-size:14px; font-weight:800; }
+    .store .tag{ font-size:10.5px; color:var(--muted); margin:0 0 8px; }
+    .grp{ margin:6px 0 0; }
+    .grp b{ font-size:10.5px; letter-spacing:.4px; color:var(--ink); }
+    .grp .t{ font-size:11px; color:#37404b; line-height:1.5; }
+    .mono{ font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace; font-size:10.5px; }
+
+    .bridge{ text-align:center; margin:11px 0 0; }
+    .bridge .chip{ display:inline-block; border:1.5px dashed var(--line); border-radius:999px;
+                   padding:6px 14px; font-size:12px; font-weight:700; background:#fff; }
+    .bridge .chip .k{ font-family:"SF Mono",ui-monospace,Menlo,monospace; }
+
+    .lane{ flex:1; min-width:300px; border:1.3px solid var(--hair); border-radius:10px; padding:11px 12px; }
+    .lane .lh{ font-size:12.5px; font-weight:800; margin:0 0 2px; }
+    .lane .ls{ font-size:10.5px; color:var(--muted); margin:0 0 9px; }
+    .lane.content .lh::before{ content:"◆ "; color:var(--ch-bd); }
+    .lane.history .lh::before{ content:"◆ "; color:var(--pg-bd); }
+    .flow{ list-style:none; margin:0; padding:0; }
+    .flow li{ position:relative; padding:5px 0 5px 16px; font-size:11px; color:#2d353f; line-height:1.4; }
+    .flow li::before{ content:"▸"; position:absolute; left:0; top:5px; color:var(--faint); }
+    .flow li b{ color:var(--ink); }
+
+    .converge{ text-align:center; font-size:11px; color:var(--muted); margin:10px 0 0; }
+
+    .pill{ border:1.3px solid var(--line); border-radius:8px; padding:9px 12px; font-size:11.5px; }
+    .pill b{ font-size:12.5px; }
+    .pill .mut{ color:var(--muted); }
+
+    .guard{ display:flex; gap:8px; flex-wrap:wrap; }
+    .guard .g{ flex:1; min-width:120px; border:1.2px solid var(--hair); border-radius:8px; padding:8px 10px; }
+    .guard .g .gn{ font-size:10px; color:var(--faint); font-weight:700; }
+    .guard .g h5{ margin:2px 0 1px; font-size:11.5px; }
+    .guard .g p{ margin:0; font-size:10.3px; color:var(--muted); line-height:1.4; }
+
+    .loop{ border:1.6px dashed var(--acc); border-radius:10px; padding:9px 14px; margin:14px 0 0;
+           color:var(--acc); font-size:12px; font-weight:700; display:flex; align-items:center; gap:10px; }
+    .loop .ar{ font-size:17px; }
+
+    .foot{ border:1.3px solid var(--line); border-radius:10px; padding:10px 14px; margin-top:16px;
+           font-size:11.5px; color:#2d353f; line-height:1.55; background:#fafbfc; }
+    .foot b{ color:var(--ink); }
+    .hard{ margin-top:6px; }
+    .hard .h{ display:inline-block; border:1px solid var(--hair); border-radius:6px; padding:3px 8px;
+              font-size:10.3px; color:#37404b; margin:3px 5px 0 0; }
+    .hard .h b{ color:var(--ink); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Adaptive Document Preparation System — Engineering Blueprint</h1>
+    <p class="sub">RAG MCQ generator with a closed adaptive loop. Two storage engines, dual retrieval, and persisted cross-session mastery memory — orchestrated as a LangGraph state machine.</p>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--pg-bg);border-color:var(--pg-bd)"></i> PostgreSQL — relational source of truth</span>
+      <span><i class="sw" style="background:var(--ch-bg);border-color:var(--ch-bd)"></i> ChromaDB — vector index</span>
+      <span><i class="sw" style="background:#fff;border:1.6px dashed var(--acc)"></i> adaptive feedback loop</span>
+    </div>
+
+    <!-- ===================== BAND 1 ===================== -->
+    <div class="band">
+      <span class="band-l">① OFFLINE INDEXING · runs once</span>
+      <div class="row even">
+        <div class="card step"><span class="n">a</span><h4>Parse</h4><p>PyMuPDF + regex → 10 sections, 133 sub-sections, char→page map</p></div>
+        <div class="card step"><span class="n">b</span><h4>Chunk</h4><p>token-aware hybrid: merge &lt;100, split &gt;500 (tiktoken)</p></div>
+        <div class="card step"><span class="n">c</span><h4>Tag topics</h4><p>glossary-driven, word-bounded regex → 69 topics, depth-scored</p></div>
+        <div class="card step"><span class="n">d</span><h4>Embed</h4><p>all-MiniLM-L6-v2 → 384-dim, L2-normalised</p></div>
+        <div class="card step"><span class="n">e</span><h4>Write both stores</h4><p>relational rows → Postgres · vectors → ChromaDB</p></div>
+      </div>
+      <div class="band-note">Idempotent: UPSERT sections/topics; DELETE+INSERT chunks &amp; junction rows; ChromaDB upsert keyed by id → safe to re-run.</div>
+    </div>
+
+    <div class="down"><svg viewBox="0 0 18 30"><line x1="9" y1="0" x2="9" y2="24" stroke="#5b6470" stroke-width="1.4"/><path d="M3 22 L9 30 L15 22" fill="none" stroke="#5b6470" stroke-width="1.4"/></svg></div>
+
+    <!-- ===================== BAND 2 ===================== -->
+    <div class="band">
+      <span class="band-l">② DUAL STORAGE · why two engines</span>
+      <div class="row">
+        <div class="store pg" style="flex:1.25">
+          <h3>PostgreSQL</h3>
+          <p class="tag">11 tables · 4 layers · structured truth, history &amp; adaptive state</p>
+          <div class="grp"><b>STRUCTURE</b><div class="t mono">sections · chunks (content, pages, cross_refs, kind)</div></div>
+          <div class="grp"><b>TOPIC GRAPH</b><div class="t mono">topics · section_topics (depth) · chunk_topics · question_topics (is_primary)</div></div>
+          <div class="grp"><b>SESSIONS</b><div class="t mono">sessions (score, is_cold_start, adaptive_context) · questions · answers</div></div>
+          <div class="grp"><b>MASTERY (memory)</b><div class="t mono">topic_mastery (global: weight, streak, is_mastered) · section_topic_mastery (per-section)</div></div>
+        </div>
+        <div class="store ch" style="flex:1">
+          <h3>ChromaDB</h3>
+          <p class="tag">vector index — semantic ranking only</p>
+          <div class="grp"><div class="t">• 195 chunk embeddings, <b>384-dim</b> (MiniLM)</div></div>
+          <div class="grp"><div class="t">• HNSW index, <b>cosine</b> similarity</div></div>
+          <div class="grp"><div class="t">• minimal metadata for filtering:<br><span class="mono">section_id · chunk_kind · pages · cross_refs</span></div></div>
+          <div class="grp"><div class="t" style="color:var(--muted)">No business logic here — it answers “which text is <i>relevant</i>”, nothing about the user.</div></div>
+        </div>
+      </div>
+      <div class="bridge"><span class="chip">🔑 <span class="k">sub_section_id</span> — the same key lives in BOTH stores → join vector hits back to full relational rows</span></div>
+      <div class="band-note">FK policy: <b>CASCADE</b> almost everywhere, but <b>RESTRICT</b> on <span class="mono">questions.section_id</span> — a section can’t be deleted while historical questions reference it (protect the audit trail).</div>
+    </div>
+
+    <div class="down"><svg viewBox="0 0 18 30"><line x1="9" y1="0" x2="9" y2="24" stroke="#5b6470" stroke-width="1.4"/><path d="M3 22 L9 30 L15 22" fill="none" stroke="#5b6470" stroke-width="1.4"/></svg></div>
+
+    <!-- ===================== BAND 3 ===================== -->
+    <div class="band">
+      <span class="band-l">③ DUAL RETRIEVAL · two different questions, fused</span>
+      <div class="row">
+        <div class="lane content">
+          <p class="lh">CONTENT retrieval — “what is there to ask about?”</p>
+          <p class="ls">reads ChromaDB → then PostgreSQL</p>
+          <ul class="flow">
+            <li>embed the query seed → <b>ChromaDB HNSW</b> search</li>
+            <li>filter: <span class="mono">section_id ∈ chosen</span>, exclude glossary noise</li>
+            <li>top-k <b>sub_section_ids</b> (ranked by similarity)</li>
+            <li>fetch full ORM rows from <b>Postgres</b>, <b>re-order to preserve Chroma’s ranking</b></li>
+            <li>cross-reference resolution: pull §X.Y referenced chunks (depth 1; merged-id LIKE match)</li>
+            <li>token-budget filter → fits the context window</li>
+          </ul>
+        </div>
+        <div class="lane history">
+          <p class="lh">HISTORY retrieval — “what is THIS user weak at?”</p>
+          <p class="ls">reads PostgreSQL mastery tables</p>
+          <ul class="flow">
+            <li>read <b>topic_mastery</b> + <b>section_topic_mastery</b> + <span class="mono">section_topics.depth</span></li>
+            <li><b>Allocator</b>: effective weight = <span class="mono">global × section × depth</span><br>(depth 1.0 / 0.6 / 0.3) → sort desc</li>
+            <li>proportional split into <b>per-topic query seeds</b> (weakest get more; every weak topic guaranteed ≥1)</li>
+            <li>modes: <span class="mono">cold · adaptive · all_mastered · all_weak</span></li>
+            <li><b>Adaptive-context</b>: WEAK / MASTERED summary + “avoid these recent questions”, token-budgeted (3-level compression)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="converge">▼ &nbsp; both lanes fuse in &nbsp; ▼</div>
+      <div class="pill" style="margin-top:8px">
+        <b>Prompt assembly (LangChain)</b> &nbsp;
+        <span class="mut">content chunks (from lane 1) &nbsp;+&nbsp; topic seeds &amp; WEAK/MASTERED summary (from lane 2) &nbsp;+&nbsp; JSON schema / format instructions</span>
+      </div>
+      <div class="band-note"><b>Why dual?</b> A vector DB can’t tell you which topic a user keeps failing; relational tables can’t do fuzzy semantic ranking. Lane 1 finds <i>relevant</i> material; lane 2 makes it <i>personal</i>. Mastery weights decide <i>which</i> seeds drive the semantic search.</div>
+    </div>
+
+    <div class="down"><svg viewBox="0 0 18 30"><line x1="9" y1="0" x2="9" y2="24" stroke="#5b6470" stroke-width="1.4"/><path d="M3 22 L9 30 L15 22" fill="none" stroke="#5b6470" stroke-width="1.4"/></svg></div>
+
+    <!-- ===================== BAND 4 ===================== -->
+    <div class="band">
+      <span class="band-l">④ GENERATE + VALIDATE</span>
+      <div class="row" style="align-items:stretch">
+        <div class="pill" style="flex:.8">
+          <b>LLM gateway</b><br>
+          <span class="mut">Groq (primary) → Gemini (fallback) via <span class="mono">.with_fallbacks()</span>; TPM pacing between calls; one LLM call per seed.</span>
+        </div>
+        <div style="flex:1.6">
+          <div class="guard">
+            <div class="g"><div class="gn">LAYER 1</div><h5>Schema</h5><p>Pydantic + JsonOutputParser strips fences, validates shape</p></div>
+            <div class="g"><div class="gn">LAYER 2</div><h5>Unique choices</h5><p>4 distinct options, no repeats</p></div>
+            <div class="g"><div class="gn">LAYER 3</div><h5>Hallucination</h5><p><b>source_quote must fuzzy-match the retrieved context</b> — else reject</p></div>
+            <div class="g"><div class="gn">LAYER 4</div><h5>Near-duplicate</h5><p>SequenceMatcher ≥0.65 on normalised text vs recent Qs</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="band-note">Conditional retry edge: if validation drops MCQs below target, the graph loops <b>validate → generate</b> again (bounded by <span class="mono">retry_count</span>).</div>
+    </div>
+
+    <div class="down"><svg viewBox="0 0 18 30"><line x1="9" y1="0" x2="9" y2="24" stroke="#5b6470" stroke-width="1.4"/><path d="M3 22 L9 30 L15 22" fill="none" stroke="#5b6470" stroke-width="1.4"/></svg></div>
+
+    <!-- ===================== BAND 5 ===================== -->
+    <div class="band">
+      <span class="band-l">⑤ SCORE + CLOSE THE LOOP</span>
+      <div class="row even">
+        <div class="card"><h4>Record</h4><p>persist questions + <span class="mono">question_topics</span> (primary/secondary links)</p></div>
+        <div class="card"><h4>Simulate + score</h4><p>answer each Q (strategy), compute per-session score</p></div>
+        <div class="card"><h4>Update mastery (cascade)</h4><p>for every linked topic: streak math, <span class="mono">weight = 1 + wrong×0.5×impact</span>, clamp [0.1, 5.0]</p></div>
+        <div class="card"><h4>Regression guard</h4><p>was mastered &amp; now wrong → un-master + bump weight to floor 2.5</p></div>
+      </div>
+      <div class="band-note">impact = 1.0 primary / 0.5 secondary · correct → <span class="mono">streak=max(0,s)+1</span> · wrong → <span class="mono">streak=min(0,s)−1</span> · writes back to the two mastery tables.</div>
+    </div>
+
+    <!-- ===================== FEEDBACK LOOP ===================== -->
+    <div class="loop">
+      <span class="ar">↺</span>
+      <span>ADAPTIVE LOOP — every answer rewrites mastery weights in Postgres → the next session’s <b>HISTORY retrieval (③ lane 2)</b> reads new weights → different seeds → different questions. Memory is <b>persisted relational state</b>, not in-RAM.</span>
+    </div>
+
+    <!-- ===================== ORCHESTRATION FOOTER ===================== -->
+    <div class="foot">
+      <b>Orchestration — LangGraph state machine.</b>
+      <span class="mono">detect_mode → (adaptive? load_context) → create_session → generate → validate → record → simulate&amp;score → complete</span>,
+      with 2 real conditional edges: <b>cold ↔ adaptive</b> and <b>validate → retry</b>.
+      Two memory scopes: <b>PrepState</b> (TypedDict) = in-run working memory · <b>PostgreSQL</b> = cross-session long-term memory.
+      <div class="hard">
+        <span class="h"><b>Hard:</b> dual-store consistency via bridge key + rank-preserving re-order</span>
+        <span class="h"><b>Hard:</b> cross-ref graph walk (merged-id matching)</span>
+        <span class="h"><b>Hard:</b> proportional allocation with per-topic guarantees</span>
+        <span class="h"><b>Hard:</b> regression detection on mastered topics</span>
+        <span class="h"><b>Hard:</b> token-budgeted history with 3-level graceful compression</span>
+        <span class="h"><b>Hard:</b> hallucination guard grounded in source text</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

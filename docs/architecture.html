@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adaptive Document Preparation System — How it works</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #ffffff;
+      font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #1a1a1a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 28px 56px;
+    }
+    .wrap { max-width: 1240px; width: 100%; }
+    .title { font-size: 26px; font-weight: 800; letter-spacing: -0.4px; margin: 0; }
+    .subtitle { font-size: 14px; color: #6b7280; margin: 6px 0 22px; }
+    svg { width: 100%; height: auto; display: block; }
+    .t-step  { font: 700 16px -apple-system, "Segoe UI", Roboto, sans-serif; fill: #1a1a1a; }
+    .t-sub   { font: 400 11.5px -apple-system, "Segoe UI", Roboto, sans-serif; fill: #6b7280; }
+    .t-tech  { font: 400 10.5px -apple-system, "Segoe UI", Roboto, sans-serif; fill: #9aa0a6; }
+    .t-num   { font: 700 14px -apple-system, "Segoe UI", Roboto, sans-serif; fill: #ffffff; }
+    .t-badge { font: 700 11.5px -apple-system, "Segoe UI", Roboto, sans-serif; fill: #6b7280; letter-spacing: 1px; }
+    .t-loop  { font: 700 13.5px -apple-system, "Segoe UI", Roboto, sans-serif; fill: #1a1a1a; }
+    .t-setup { font: 600 12.5px -apple-system, "Segoe UI", Roboto, sans-serif; fill: #1a1a1a; }
+    .box    { fill: #ffffff; stroke: #333333; stroke-width: 1.5; }
+    .setup  { fill: #fafafa; stroke: #c9ced6; stroke-width: 1.3; }
+    .num    { fill: #1a1a1a; }
+    .edge   { fill: none; stroke: #444444; stroke-width: 1.6; }
+    .edge-l { fill: none; stroke: #9aa0a6; stroke-width: 1.4; stroke-dasharray: 4 4; }
+    .loop   { fill: none; stroke: #1a1a1a; stroke-width: 2; stroke-dasharray: 6 4; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="title">Adaptive Document Preparation System</p>
+    <p class="subtitle">How it works — a quiz tool that reads a document, tests you, and learns from your mistakes.</p>
+
+    <svg viewBox="0 0 1240 470" role="img" aria-label="How the system works">
+      <defs>
+        <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#444444" />
+        </marker>
+        <marker id="arwk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#1a1a1a" />
+        </marker>
+      </defs>
+
+      <!-- ============ SETUP (runs once) ============ -->
+      <rect class="setup" x="40" y="18" width="1160" height="78" rx="10" ry="10" />
+      <text class="t-badge" x="64" y="44">SETUP · RUNS ONCE</text>
+
+      <text class="t-setup" x="300" y="66" text-anchor="middle">📄  Read the document</text>
+      <path class="edge" d="M 410 61 L 452 61" marker-end="url(#arw)" />
+      <text class="t-setup" x="560" y="66" text-anchor="middle">✂️  Split into sections</text>
+      <path class="edge" d="M 672 61 L 714 61" marker-end="url(#arw)" />
+      <text class="t-setup" x="930" y="60" text-anchor="middle">📚  Build a searchable knowledge base</text>
+      <text class="t-tech"  x="930" y="78" text-anchor="middle">PostgreSQL · ChromaDB</text>
+
+      <!-- ============ THE LOOP (every session) ============ -->
+      <!-- step boxes: x = 40, 270, 500, 730, 960 ; w=200 ; y=200 h=128 -->
+
+      <!-- 1 -->
+      <rect class="box" x="40" y="200" width="200" height="128" rx="8" ry="8" />
+      <circle class="num" cx="62" cy="200" r="16" /><text class="t-num" x="62" y="205" text-anchor="middle">1</text>
+      <text class="t-step" x="140" y="252" text-anchor="middle">Pick topics</text>
+      <text class="t-sub"  x="140" y="276" text-anchor="middle">you choose which</text>
+      <text class="t-sub"  x="140" y="292" text-anchor="middle">sections to study</text>
+
+      <!-- 2 -->
+      <rect class="box" x="270" y="200" width="200" height="128" rx="8" ry="8" />
+      <circle class="num" cx="292" cy="200" r="16" /><text class="t-num" x="292" y="205" text-anchor="middle">2</text>
+      <text class="t-step" x="370" y="252" text-anchor="middle">Find material</text>
+      <text class="t-sub"  x="370" y="276" text-anchor="middle">search the knowledge base</text>
+      <text class="t-sub"  x="370" y="292" text-anchor="middle">+ recall your weak spots</text>
+
+      <!-- 3 -->
+      <rect class="box" x="500" y="200" width="200" height="128" rx="8" ry="8" />
+      <circle class="num" cx="522" cy="200" r="16" /><text class="t-num" x="522" y="205" text-anchor="middle">3</text>
+      <text class="t-step" x="600" y="252" text-anchor="middle">Write questions</text>
+      <text class="t-sub"  x="600" y="276" text-anchor="middle">AI drafts the MCQs</text>
+      <text class="t-tech" x="600" y="294" text-anchor="middle">Groq → Gemini fallback</text>
+
+      <!-- 4 -->
+      <rect class="box" x="730" y="200" width="200" height="128" rx="8" ry="8" />
+      <circle class="num" cx="752" cy="200" r="16" /><text class="t-num" x="752" y="205" text-anchor="middle">4</text>
+      <text class="t-step" x="830" y="252" text-anchor="middle">Fact-check</text>
+      <text class="t-sub"  x="830" y="276" text-anchor="middle">drop anything not in the</text>
+      <text class="t-sub"  x="830" y="292" text-anchor="middle">document, and duplicates</text>
+      <text class="t-tech" x="830" y="313" text-anchor="middle">(retries if a question fails)</text>
+
+      <!-- 5 -->
+      <rect class="box" x="960" y="200" width="200" height="128" rx="8" ry="8" />
+      <circle class="num" cx="982" cy="200" r="16" /><text class="t-num" x="982" y="205" text-anchor="middle">5</text>
+      <text class="t-step" x="1060" y="252" text-anchor="middle">Score &amp; learn</text>
+      <text class="t-sub"  x="1060" y="276" text-anchor="middle">grade your answers,</text>
+      <text class="t-sub"  x="1060" y="292" text-anchor="middle">remember what you missed</text>
+
+      <!-- arrows between steps -->
+      <path class="edge" d="M 240 264 L 268 264" marker-end="url(#arw)" />
+      <path class="edge" d="M 470 264 L 498 264" marker-end="url(#arw)" />
+      <path class="edge" d="M 700 264 L 728 264" marker-end="url(#arw)" />
+      <path class="edge" d="M 930 264 L 958 264" marker-end="url(#arw)" />
+
+      <!-- setup feeds step 2 -->
+      <path class="edge-l" d="M 370 96 L 370 198" marker-end="url(#arw)" />
+      <text class="t-tech" x="382" y="150" text-anchor="start">uses the knowledge base</text>
+
+      <!-- ============ feedback loop: step 5 -> step 2 ============ -->
+      <path class="loop" d="M 1060 328 L 1060 405 L 370 405 L 370 330" marker-end="url(#arwk)" />
+      <text class="t-loop" x="715" y="398" text-anchor="middle">↻  It adapts every session — your mistakes decide what you're quizzed on next</text>
+    </svg>
+  </div>
+</body>
+</html>
